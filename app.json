@@ -3,6 +3,7 @@
     "name": "canh-bao-ngap-lut",
     "slug": "canh-bao-ngap-lut",
     "version": "1.0.0",
+    "jsEngine": "hermes",
     "assetBundlePatterns": [
       "**/*"
     ]

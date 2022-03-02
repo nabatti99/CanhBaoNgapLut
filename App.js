@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { NativeRouter } from "react-router-native";
+import { Routes, Route } from "react-router-dom";
+
+import MainSplashScreen from "./screens/Splash/MainSplash.screen";
+import Splash1Screen from "./screens/Splash/Splash1.screen";
+import Splash2Screen from "./screens/Splash/Splash2.screen";
+import Splash3Screen from "./screens/Splash/Splash3.screen";
+import MapScreen from "./screens/Map/Map.screen";
+
+import loadConfig from "./config";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [isConfigLoaded, setIsConfigLoaded] = useState(false);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    loadConfig().then(() => {
+      console.log("Config Loaded");
+      setIsConfigLoaded(true);
+    });
+  }, []);
+
+  if (!isConfigLoaded) return null;
+  else
+    return (
+      <NativeRouter>
+        <Routes>
+          <Route path="/" element={<MainSplashScreen />} />
+          <Route path="Splash1" element={<Splash1Screen />} />
+          <Route path="Splash2" element={<Splash2Screen />} />
+          <Route path="Splash3" element={<Splash3Screen />} />
+          <Route path="Map" element={<MapScreen />} />
+        </Routes>
+      </NativeRouter>
+    );
+}
