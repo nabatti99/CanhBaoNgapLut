@@ -6,7 +6,7 @@ import MainSplashScreen from "./screens/Splash/MainSplash.screen";
 import Splash1Screen from "./screens/Splash/Splash1.screen";
 import Splash2Screen from "./screens/Splash/Splash2.screen";
 import Splash3Screen from "./screens/Splash/Splash3.screen";
-import MapScreen from "./screens/Map/Map.screen";
+import MainScreen from "./screens/Main/Main.screen";
 
 import loadConfig from "./config";
 
@@ -29,7 +29,7 @@ export default function App() {
           <Route path="Splash1" element={<Splash1Screen />} />
           <Route path="Splash2" element={<Splash2Screen />} />
           <Route path="Splash3" element={<Splash3Screen />} />
-          <Route path="Map" element={<MapScreen />} />
+          <Route path="Main" element={<MainScreen />} />
         </Routes>
       </NativeRouter>
     );

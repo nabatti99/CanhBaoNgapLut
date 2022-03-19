@@ -1,0 +1,79 @@
+import React from "react";
+import { BorderRadiuses, Colors, Image, Shadows, Text, View } from "react-native-ui-lib";
+
+import TopInput from "./components/UI/TopInput.ui";
+import SearchSVG from "../../assets/icons/search.svg";
+import BottomPanelMain from "./components/BottomPanel.main";
+import CoffeeSVG from "../../assets/icons/coffee.svg";
+import StarFillSVG from "../../assets/icons/star_fill.svg";
+import StarOutlineSVG from "../../assets/icons/star_outline.svg";
+import ArrowRightSVG from "../../assets/icons/arrow_right.svg";
+
+function SearchLocation() {
+  return (
+    <BottomPanelMain>
+      <TopInput
+        value="123"
+        onTextChange={() => {}}
+        leftIconComponent={SearchSVG}
+        placeholder={"Địa điểm bạn muốn bắt đầu"}
+      />
+
+      <View row marginT-s4>
+        <Image
+          source={require("../../assets/pictures/coffee_demo.jpg")}
+          resizeMode="cover"
+          style={{
+            borderRadius: BorderRadiuses.br8,
+          }}
+          width={86}
+          height={86}
+          marginR-s3
+        />
+        <View flexG>
+          <View row centerV>
+            <Text h3 gray700 marginR-s2>
+              Mr.Good Tea &amp; Coffee
+            </Text>
+            <View marginT-s1>
+              <CoffeeSVG color={Colors.gray500} width={16} height={16} />
+            </View>
+          </View>
+
+          <Text regular gray500>
+            883 Tôn Đức Thắng, Quảng Nam
+          </Text>
+
+          <View row spread centerV>
+            <View row>
+              <View marginR-s1>
+                <StarFillSVG color={Colors.yellow400} width={16} height={16} />
+              </View>
+              <View marginR-s1>
+                <StarFillSVG color={Colors.yellow400} width={16} height={16} />
+              </View>
+              <View marginR-s1>
+                <StarFillSVG color={Colors.yellow400} width={16} height={16} />
+              </View>
+              <View marginR-s1>
+                <StarFillSVG color={Colors.yellow400} width={16} height={16} />
+              </View>
+              <View marginR-s1>
+                <StarOutlineSVG color={Colors.gray500} width={16} height={16} />
+              </View>
+            </View>
+
+            <View right>
+              <ArrowRightSVG color={Colors.blue500} width={24} height={24} />
+              <Text small blue500>
+                1.2 km
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </BottomPanelMain>
+  );
+}
+
+export default SearchLocation;

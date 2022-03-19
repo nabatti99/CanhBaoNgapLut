@@ -8,7 +8,7 @@ function Splash3Screen() {
   const navigate = useNavigate();
 
   const handleNext = () => {
-    navigate("/Map");
+    navigate("/Main");
   };
 
   return (

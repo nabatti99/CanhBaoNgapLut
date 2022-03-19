@@ -1,8 +1,11 @@
 import React from "react";
+import { Dimensions } from "react-native";
 import MapView from "react-native-maps";
 import { Text, View } from "react-native-ui-lib";
 
-function MapScreen() {
+const windowHeight = Dimensions.get("screen").height;
+
+function MapMain() {
   const customMapStyle = [
     {
       featureType: "landscape.natural",
@@ -34,25 +37,23 @@ function MapScreen() {
   ];
 
   return (
-    <View flex>
-      <View absF marginB-152 bg-blue300>
-        <MapView
-          style={{
-            flex: 1,
-          }}
-          initialRegion={{
-            latitude: 15.5,
-            longitude: 108.1,
-            latitudeDelta: 1,
-            longitudeDelta: 1,
-          }}
-          showsUserLocation={true}
-          showsCompass={true}
-          customMapStyle={customMapStyle}
-        />
-      </View>
+    <View absF marginB-180 bg-blue300>
+      <MapView
+        style={{
+          height: windowHeight - 198,
+        }}
+        initialRegion={{
+          latitude: 15.5,
+          longitude: 108.1,
+          latitudeDelta: 1,
+          longitudeDelta: 1,
+        }}
+        showsUserLocation={true}
+        showsCompass={true}
+        customMapStyle={customMapStyle}
+      />
     </View>
   );
 }
 
-export default MapScreen;
+export default MapMain;
