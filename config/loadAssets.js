@@ -12,4 +12,8 @@ export default function loadAssets() {
     phone: require(BASE_ASSETS_PATH + "phone_in_hand.jpg"),
     water: require(BASE_ASSETS_PATH + "water_in_foot.jpg"),
   });
+
+  Assets.loadAssetsGroup("demo", {
+    coffee: require(BASE_ASSETS_PATH + "coffee_demo.jpg"),
+  });
 }
