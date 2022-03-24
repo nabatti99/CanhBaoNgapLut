@@ -1,29 +1,25 @@
-import React from "react";
-import { BorderRadiuses, Colors, Image, Shadows, Text, View } from "react-native-ui-lib";
+import React from 'react';
+import { BorderRadiuses, Colors, Image, Shadows, Text, View } from 'react-native-ui-lib';
 
-import TopInput from "../components/UI/TopInput.ui";
-import SearchSVG from "../../../assets/icons/search.svg";
-import BottomPanelMain from "../components/BottomPanel.main";
-import CoffeeSVG from "../../../assets/icons/coffee.svg";
-import StarFillSVG from "../../../assets/icons/star_fill.svg";
-import StarOutlineSVG from "../../../assets/icons/star_outline.svg";
-import ArrowRightSVG from "../../../assets/icons/arrow_right.svg";
+import TopInput from '../components/UI/TopInput.ui';
+import BottomPanelMain from '../components/BottomPanel.main';
+import { SearchSVG, CoffeeSVG, StarFillSVG, StarOutlineSVG, ArrowRightSVG } from '../../../config/loadSvg';
 
 function SearchLocation() {
   return (
     <BottomPanelMain>
       <TopInput
-        value="123"
+        value='123'
         onTextChange={() => {}}
         leftIconComponent={SearchSVG}
-        placeholder={"Địa điểm bạn muốn bắt đầu"}
+        placeholder={'Địa điểm bạn muốn bắt đầu'}
       />
 
       <View row marginT-s4>
         <Image
-          assetGroup="demo"
-          assetName="coffee"
-          resizeMode="cover"
+          assetGroup='demo'
+          assetName='coffee'
+          resizeMode='cover'
           style={{
             borderRadius: BorderRadiuses.br8,
           }}
