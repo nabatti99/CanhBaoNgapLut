@@ -7,14 +7,7 @@ import { SearchSVG, CoffeeSVG, StarFillSVG, StarOutlineSVG, ArrowRightSVG } from
 
 function SearchLocation() {
   return (
-    <BottomPanelMain>
-      <TopInput
-        value='123'
-        onTextChange={() => {}}
-        leftIconComponent={SearchSVG}
-        placeholder={'Địa điểm bạn muốn bắt đầu'}
-      />
-
+    <View>
       <View row marginT-s4>
         <Image
           assetGroup='demo'
@@ -69,7 +62,7 @@ function SearchLocation() {
           </View>
         </View>
       </View>
-    </BottomPanelMain>
+    </View>
   );
 }
 
