@@ -1,7 +1,8 @@
 import React from "react";
 import { Dimensions } from "react-native";
-import MapView from "react-native-maps";
-import { Text, View } from "react-native-ui-lib";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import { View } from "react-native-ui-lib";
+import { useSelector } from "react-redux";
 
 const windowHeight = Dimensions.get("screen").height;
 
@@ -36,6 +37,9 @@ function MapMain() {
     },
   ];
 
+  const polyline = useSelector((state) => state.polyline);
+  const marker = useSelector((state) => state.marker);
+
   return (
     <View absF marginB-180 bg-blue300>
       <MapView
@@ -51,7 +55,17 @@ function MapMain() {
         showsUserLocation={true}
         showsCompass={true}
         customMapStyle={customMapStyle}
-      />
+      >
+        <Polyline
+          coordinates={polyline.points}
+          strokeColor={polyline.strokeColor}
+          strokeWidth={polyline.strokeWidth}
+        />
+
+        {marker.points.map((point, index) => (
+          <Marker coordinate={point} image={marker.image} key={index} />
+        ))}
+      </MapView>
     </View>
   );
 }

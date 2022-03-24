@@ -6,7 +6,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 
 const windowHeight = Dimensions.get("screen").height;
 
-function BottomPanelMain({ children }) {
+function BottomPanel({ children }) {
   // Setup Pan Gesture => height of Bottom Panel
   const BEGIN_HEIGHT = 218;
   const heightAnimated = useSharedValue(BEGIN_HEIGHT);
@@ -50,4 +50,4 @@ function BottomPanelMain({ children }) {
   );
 }
 
-export default BottomPanelMain;
+export default BottomPanel;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Colors, Incubator, Text, View } from "react-native-ui-lib";
 
 /**
@@ -10,20 +10,22 @@ import { Colors, Incubator, Text, View } from "react-native-ui-lib";
  * @param {String} placeholder
  * @returns
  */
-function TopInput({ value, onTextChange, leftIconComponent, label, placeholder }) {
+function TopInput({ value, onTextChange, leftIcon, label, placeholder }) {
   const handleTextChanged = (newValue) => {
     onTextChange(newValue);
   };
 
+  const LeftIconComponent = lazy(() => import(`../../../../assets/icons/search.svg`));
+
   let inputColor = Colors.blue300;
   if (value) inputColor = Colors.blue500;
-
-  const LeftIconComponent = leftIconComponent;
 
   return (
     <View bg-gray50 br8 row centerV paddingH-s4 paddingV-s3>
       <View marginR-s2 row>
-        <LeftIconComponent color={inputColor} width={24} height={24} />
+        <Suspense fallback={null}>
+          <LeftIconComponent color={inputColor} width={24} height={24} />
+        </Suspense>
         <Text regular blue500 marginL-s1>
           {label}
         </Text>
