@@ -24,8 +24,8 @@ function BottomArea() {
         placeholder={placeholder}
         label={label}
       />
-      <SearchLocation />
-      {/* <DirectionInstruction /> */}
+      {/* <SearchLocation /> */}
+      <DirectionInstruction />
     </BottomPanel>
   );
 }

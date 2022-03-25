@@ -6,6 +6,9 @@
     "jsEngine": "hermes",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.ancv.canhbaongaplut"
+    }
   }
 }
