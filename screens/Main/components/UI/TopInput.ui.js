@@ -1,21 +1,20 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Colors, Incubator, Text, View } from "react-native-ui-lib";
+import IconSvg from "../../../../components/IconSVG";
 
 /**
  * Top Input on every screens
  * @param {String} value required
  * @param {Event} onChangeText required, Params: newValue
- * @param {React Component} leftIconComponent required
+ * @param {String} leftIconName required
  * @param {String} label
  * @param {String} placeholder
  * @returns
  */
-function TopInput({ value, onTextChange, leftIcon, label, placeholder }) {
+function TopInput({ value, onTextChange, leftIconName, label, placeholder }) {
   const handleTextChanged = (newValue) => {
     onTextChange(newValue);
   };
-
-  const LeftIconComponent = lazy(() => import(`../../../../assets/icons/search.svg`));
 
   let inputColor = Colors.blue300;
   if (value) inputColor = Colors.blue500;
@@ -24,7 +23,7 @@ function TopInput({ value, onTextChange, leftIcon, label, placeholder }) {
     <View bg-gray50 br8 row centerV paddingH-s4 paddingV-s3>
       <View marginR-s2 row>
         <Suspense fallback={null}>
-          <LeftIconComponent color={inputColor} width={24} height={24} />
+          <IconSvg name={leftIconName} color={inputColor} width={24} height={24} />
         </Suspense>
         <Text regular blue500 marginL-s1>
           {label}

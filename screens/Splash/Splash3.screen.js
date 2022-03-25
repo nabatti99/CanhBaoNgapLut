@@ -11,13 +11,17 @@ function Splash3Screen() {
     navigate("/Main");
   };
 
+  const handleSkip = () => {
+    navigate("/Main");
+  };
+
   return (
     <View flex>
       <View absF>
         <Image assetGroup="splash" assetName="water" height="100%" width="100%" resizeMode="cover" />
       </View>
       <View right marginT-32 marginR-16>
-        <TouchableOpacity paddingH-s4 paddingV-s3>
+        <TouchableOpacity paddingH-s4 paddingV-s3 onPress={handleSkip}>
           <Text blackAlpha800 strong>
             Bỏ qua
           </Text>

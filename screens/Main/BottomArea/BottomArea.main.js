@@ -11,7 +11,7 @@ function BottomArea() {
   const dispatch = useDispatch();
 
   const value = useSelector((state) => state.topInput.value);
-  const leftIconComponent = useSelector((state) => state.topInput.leftIconComponent);
+  const leftIconName = useSelector((state) => state.topInput.leftIconName);
   const placeholder = useSelector((state) => state.topInput.placeholder);
   const label = useSelector((state) => state.topInput.label);
 
@@ -20,12 +20,12 @@ function BottomArea() {
       <TopInput
         value={value}
         onTextChange={(newValue) => dispatch(handleTopInputChanged(newValue))}
-        leftIconComponent={leftIconComponent}
+        leftIconName={leftIconName}
         placeholder={placeholder}
         label={label}
       />
-      {/* <SearchLocation /> */}
-      <DirectionInstruction />
+      <SearchLocation />
+      {/* <DirectionInstruction /> */}
     </BottomPanel>
   );
 }

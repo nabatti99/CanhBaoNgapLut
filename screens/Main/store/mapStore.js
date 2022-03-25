@@ -18,7 +18,7 @@ const mapSlice = createSlice({
     topInput: {
       label: "",
       value: "",
-      leftIconComponent: "send.svg",
+      leftIconName: "SendSVG",
       placeholder: "",
     },
   },
