@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useMemo } from "react";
 import { Colors, SkeletonView } from "react-native-ui-lib";
 
 function lazyLoad(dynamicImport) {
@@ -17,6 +17,7 @@ const iconSvgLoaders = {
   CoffeeSVG: lazyLoad(() => import("../assets/icons/coffee.svg")),
   CurrentLocationSVG: lazyLoad(() => import("../assets/icons/current_location.svg")),
   DetailsSVG: lazyLoad(() => import("../assets/icons/details.svg")),
+  ExpandMoreSVG: lazyLoad(() => import("../assets/icons/expand_more.svg")),
   FastFoodSVG: lazyLoad(() => import("../assets/icons/fast_food.svg")),
   GasSVG: lazyLoad(() => import("../assets/icons/gas.svg")),
   MapSVG: lazyLoad(() => import("../assets/icons/map.svg")),
@@ -36,7 +37,7 @@ const iconSvgLoaders = {
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, ...props }) {
   const iconSvgLoader = iconSvgLoaders[name];
-  const Icon = iconSvgLoader();
+  const Icon = useMemo(() => iconSvgLoader(), [name, color, width, height]);
 
   return (
     <Suspense fallback={<SkeletonView circle height={height} />}>
