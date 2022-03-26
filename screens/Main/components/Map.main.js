@@ -1,37 +1,37 @@
-import React from "react";
-import { Dimensions } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
-import { View } from "react-native-ui-lib";
-import { useSelector } from "react-redux";
+import React from 'react';
+import { Dimensions } from 'react-native';
+import MapView, { Marker, Polyline } from 'react-native-maps';
+import { View } from 'react-native-ui-lib';
+import { useSelector } from 'react-redux';
 
-const windowHeight = Dimensions.get("screen").height;
+const windowHeight = Dimensions.get('screen').height;
 
 function MapMain() {
   const customMapStyle = [
     {
-      featureType: "landscape.natural",
-      elementType: "geometry",
+      featureType: 'landscape.natural',
+      elementType: 'geometry',
       stylers: [
         {
-          color: "#dbeaff",
+          color: '#dbeaff',
         },
       ],
     },
     {
-      featureType: "road",
-      elementType: "geometry",
+      featureType: 'road',
+      elementType: 'geometry',
       stylers: [
         {
-          color: "#ffffff",
+          color: '#ffffff',
         },
       ],
     },
     {
-      featureType: "water",
-      elementType: "geometry",
+      featureType: 'water',
+      elementType: 'geometry',
       stylers: [
         {
-          color: "#b7cdf0",
+          color: '#b7cdf0',
         },
       ],
     },
@@ -39,6 +39,7 @@ function MapMain() {
 
   const polyline = useSelector((state) => state.polyline);
   const marker = useSelector((state) => state.marker);
+  const shownNote = useSelector((state) => state.shownNote);
 
   return (
     <View absF marginB-180 bg-blue300>
@@ -56,11 +57,7 @@ function MapMain() {
         showsCompass={true}
         customMapStyle={customMapStyle}
       >
-        <Polyline
-          coordinates={polyline.points}
-          strokeColor={polyline.strokeColor}
-          strokeWidth={polyline.strokeWidth}
-        />
+        <Polyline coordinates={polyline.points} strokeColor={polyline.strokeColor} strokeWidth={polyline.strokeWidth} />
 
         {marker.points.map((point, index) => (
           <Marker coordinate={point} image={marker.image} key={index} />

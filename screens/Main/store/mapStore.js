@@ -1,8 +1,8 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
-import { Colors } from "react-native-ui-lib";
+import { createSlice, configureStore } from '@reduxjs/toolkit';
+import { Colors } from 'react-native-ui-lib';
 
 const mapSlice = createSlice({
-  name: "map",
+  name: 'map',
   initialState: {
     polyline: {
       strokeColor: Colors.blue300,
@@ -12,14 +12,21 @@ const mapSlice = createSlice({
 
     marker: {
       image: null,
-      points: [],
+      points: [
+        {
+          latitude: 16.05586,
+          longitude: 108.14843,
+        },
+      ],
     },
 
+    shownNote: true,
+
     topInput: {
-      label: "",
-      value: "",
-      leftIconName: "SendSVG",
-      placeholder: "",
+      label: '',
+      value: '',
+      leftIconName: 'SendSVG',
+      placeholder: '',
     },
   },
   reducers: {
@@ -44,6 +51,9 @@ const mapSlice = createSlice({
     handleTopInputChanged: (state, action) => {
       state.topInput.value = action.payload;
     },
+    setShownNote: (state, action) => {
+      state.shownNote = action.payload;
+    },
   },
 });
 
@@ -53,4 +63,4 @@ const mapStore = configureStore({
 
 export default mapStore;
 
-export const { setPolyline, setMarker, setTopInput, handleTopInputChanged } = mapSlice.actions;
+export const { setPolyline, setMarker, setTopInput, setShownNote, handleTopInputChanged } = mapSlice.actions;

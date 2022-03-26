@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { View } from 'react-native-ui-lib';
+import Note from './Note';
 
 const TopPart = () => {
   return (
-    <View>
-      <Text>TopPart</Text>
+    <View row>
+      <Note />
     </View>
   );
 };
