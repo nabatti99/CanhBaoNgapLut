@@ -1,11 +1,12 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { handleTopInputChanged } from "../store/mapStore";
-import BottomPanel from "../components/BottomPanel.main";
-import TopInput from "../components/UI/TopInput.ui";
-import DirectionInstruction from "./DirectionInstruction.bottom";
-import SearchLocation from "./SearchLocation.bottom";
+import { handleTopInputChanged } from '../store/mapStore';
+import BottomPanel from '../components/BottomPanel.main';
+import TopInput from '../components/UI/TopInput.ui';
+import DirectionInstruction from './DirectionInstruction.bottom';
+import SearchLocation from './SearchLocation.bottom';
+import StartAddress from './StartAddress';
 
 function BottomArea() {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ function BottomArea() {
         label={label}
       />
       {/* <SearchLocation /> */}
-      <DirectionInstruction />
+      <StartAddress />
+      {/* <DirectionInstruction /> */}
     </BottomPanel>
   );
 }
