@@ -1,8 +1,9 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
-import { View } from 'react-native-ui-lib';
+import { Assets, View, Image } from 'react-native-ui-lib';
 import { useSelector } from 'react-redux';
+import MarkerDanger from './MarkerDanger';
 
 const windowHeight = Dimensions.get('screen').height;
 
@@ -60,7 +61,16 @@ function MapMain() {
         <Polyline coordinates={polyline.points} strokeColor={polyline.strokeColor} strokeWidth={polyline.strokeWidth} />
 
         {marker.points.map((point, index) => (
-          <Marker coordinate={point} image={marker.image} key={index} />
+          <Marker
+            coordinate={point}
+            key={index}
+            anchor={{
+              x: 0.5,
+              y: 0.5,
+            }}
+          >
+            <MarkerDanger image={marker.image} icon={marker.icon} />
+          </Marker>
         ))}
       </MapView>
     </View>

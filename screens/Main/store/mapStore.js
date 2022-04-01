@@ -12,10 +12,19 @@ const mapSlice = createSlice({
 
     marker: {
       image: null,
+      icon: null,
       points: [
         {
           latitude: 16.05586,
           longitude: 108.14843,
+        },
+        {
+          latitude: 16.01286,
+          longitude: 107.74866,
+        },
+        {
+          latitude: 15.82931,
+          longitude: 108.05491,
         },
       ],
     },
