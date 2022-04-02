@@ -1,5 +1,5 @@
 import React from 'react';
-import { Assets, Image, View } from 'react-native-ui-lib';
+import { Assets, Colors, Image, View } from 'react-native-ui-lib';
 
 const MarkerDanger = ({ image, icon }) => {
   return (

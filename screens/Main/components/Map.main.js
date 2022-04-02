@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
-import { Assets, View, Image } from 'react-native-ui-lib';
+import MapView, { Callout, Marker, Polyline } from 'react-native-maps';
+import { Assets, View, Image, Text, Colors } from 'react-native-ui-lib';
 import { useSelector } from 'react-redux';
 import MarkerDanger from './MarkerDanger';
 
@@ -70,6 +70,14 @@ function MapMain() {
             }}
           >
             <MarkerDanger image={marker.image} icon={marker.icon} />
+            <Callout tooltip>
+              <View width={300} backgroundColor={Colors.white} br4 md padding-8>
+                <Text>{point.name}</Text>
+                <Text>{point.abc}</Text>
+                <Text>{point.latitude}</Text>
+                <Text>{point.longitude}</Text>
+              </View>
+            </Callout>
           </Marker>
         ))}
       </MapView>

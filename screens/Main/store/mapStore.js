@@ -17,14 +17,20 @@ const mapSlice = createSlice({
         {
           latitude: 16.05586,
           longitude: 108.14843,
+          name: 'alskdjlasdkl',
+          abc: 'sadlknaskld',
         },
         {
           latitude: 16.01286,
           longitude: 107.74866,
+          name: 'alskdjlasdkl',
+          abc: 'sadlknaskld',
         },
         {
           latitude: 15.82931,
           longitude: 108.05491,
+          name: 'alskdjlasdkl',
+          abc: 'sadlknaskld',
         },
       ],
     },
