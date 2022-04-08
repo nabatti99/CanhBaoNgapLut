@@ -6,7 +6,8 @@ import BottomPanel from '../components/BottomPanel.main';
 import TopInput from '../components/UI/TopInput.ui';
 import DirectionInstruction from './DirectionInstruction.bottom';
 import SearchLocation from './SearchLocation.bottom';
-import StartAddress from './StartAddress';
+import StartLocation from './StartLocation';
+import LocationDetail from './LocationDetail';
 
 function BottomArea() {
   const dispatch = useDispatch();
@@ -26,8 +27,9 @@ function BottomArea() {
         label={label}
       />
       {/* <SearchLocation /> */}
-      <StartAddress />
+      {/* <StartLocation /> */}
       {/* <DirectionInstruction /> */}
+      <LocationDetail />
     </BottomPanel>
   );
 }
