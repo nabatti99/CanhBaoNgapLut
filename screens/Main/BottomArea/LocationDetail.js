@@ -80,7 +80,6 @@ const LocationDetail = () => {
   };
 
   const ItemImage = ({ image }) => {
-    console.log(image);
     return (
       <View marginT-s2>
         <Image
