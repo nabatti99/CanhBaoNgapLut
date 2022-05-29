@@ -1,10 +1,10 @@
-import React from "react";
-import { Dimensions } from "react-native";
-import { BorderRadiuses, Colors, Shadows, Text, View } from "react-native-ui-lib";
-import { GestureDetector, Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import React from 'react';
+import { Dimensions } from 'react-native';
+import { BorderRadiuses, Colors, Shadows, Text, View } from 'react-native-ui-lib';
+import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-const windowHeight = Dimensions.get("screen").height;
+const windowHeight = Dimensions.get('screen').height;
 
 function BottomPanel({ children }) {
   // Setup Pan Gesture => height of Bottom Panel
@@ -30,7 +30,6 @@ function BottomPanel({ children }) {
         <View
           flex
           bg-white
-          paddingH-s6
           style={{
             ...Shadows.md,
             borderTopLeftRadius: BorderRadiuses.br32,

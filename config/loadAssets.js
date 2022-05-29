@@ -20,5 +20,6 @@ export default function loadAssets() {
   Assets.loadAssetsGroup('marker', {
     dangerGradient: require(BASE_ASSETS_PATH + 'danger_gradient.png'),
     danger: require(BASE_ASSETS_PATH + 'danger.png'),
+    locationPoint: require(BASE_ASSETS_PATH + 'location_point.png'),
   });
 }

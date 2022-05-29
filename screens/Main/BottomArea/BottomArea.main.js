@@ -8,28 +8,41 @@ import DirectionInstruction from './DirectionInstruction.bottom';
 import SearchLocation from './SearchLocation.bottom';
 import StartLocation from './StartLocation';
 import LocationDetail from './LocationDetail';
+import Direction from './Direction';
+import IconSvg from '../../../components/IconSVG';
+import { Text, View, Image, Assets, Colors } from 'react-native-ui-lib';
 
 function BottomArea() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const value = useSelector((state) => state.topInput.value);
-  const leftIconName = useSelector((state) => state.topInput.leftIconName);
-  const placeholder = useSelector((state) => state.topInput.placeholder);
-  const label = useSelector((state) => state.topInput.label);
+  // const value = useSelector((state) => state.topInput.value);
+  // const leftIconName = useSelector((state) => state.topInput.leftIconName);
+  // const placeholder = useSelector((state) => state.topInput.placeholder);
+  // const label = useSelector((state) => state.topInput.label);
 
   return (
     <BottomPanel>
-      <TopInput
+      {/* <TopInput
         value={value}
         onTextChange={(newValue) => dispatch(handleTopInputChanged(newValue))}
         leftIconName={leftIconName}
         placeholder={placeholder}
         label={label}
-      />
+      /> */}
+      <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+        <Text gray500 strong>
+          Kéo biểu tượng
+        </Text>
+        <Image source={Assets.marker.locationPoint} />
+        <Text gray500 strong>
+          để xác định tuyến tường
+        </Text>
+      </View>
       {/* <SearchLocation /> */}
       {/* <StartLocation /> */}
       {/* <DirectionInstruction /> */}
-      <LocationDetail />
+      {/* <LocationDetail /> */}
+      {<Direction />}
     </BottomPanel>
   );
 }

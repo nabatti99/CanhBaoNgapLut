@@ -1,26 +1,30 @@
-import React, { useEffect } from "react";
-import { BorderRadiuses, Colors, Image, Text, TouchableOpacity, View } from "react-native-ui-lib";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from 'react';
+import { BorderRadiuses, Colors, Image, Text, TouchableOpacity, View } from 'react-native-ui-lib';
+import { useDispatch } from 'react-redux';
 
-import { setPolyline, setMarker, setTopInput } from "../store/mapStore";
-import IconSvg from "../../../components/IconSVG";
+import { setPolylines, setMarker, setTopInput } from '../store/mapStore';
+import IconSvg from '../../../components/IconSVG';
 
 function DirectionInstruction() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      setPolyline({
-        strokeColor: Colors.blue300,
-        strokeWidth: 4,
-        points: [
-          { latitude: 15.3, longitude: 108.8 },
-          { latitude: 15.2, longitude: 108.9 },
-          { latitude: 15.1, longitude: 108.85 },
-          { latitude: 15.05, longitude: 108.75 },
-        ],
-      })
-    );
+    // dispatch(
+    //   setPolylines([
+    //     ...[
+    //       {
+    //         strokeColor: Colors.blue300,
+    //         strokeWidth: 4,
+    //         points: [
+    //           { latitude: 15.3, longitude: 108.8 },
+    //           { latitude: 15.2, longitude: 108.9 },
+    //           { latitude: 15.1, longitude: 108.85 },
+    //           { latitude: 15.05, longitude: 108.75 },
+    //         ],
+    //       },
+    //     ],
+    //   ])
+    // );
 
     dispatch(
       setMarker({
@@ -34,10 +38,10 @@ function DirectionInstruction() {
 
     dispatch(
       setTopInput({
-        label: "Vị trí bắt đầu",
-        value: "Bưu điện Thành Phố Tam Kỳ",
-        leftIconName: "CurrentLocationSVG",
-        placeholder: "",
+        label: 'Vị trí bắt đầu',
+        value: 'Bưu điện Thành Phố Tam Kỳ',
+        leftIconName: 'CurrentLocationSVG',
+        placeholder: '',
       })
     );
   }, []);
@@ -47,18 +51,18 @@ function DirectionInstruction() {
       <View marginV-s3 marginH-s1>
         <View
           width={0}
-          height="100%"
+          height='100%'
           absL
           marginL-11
           style={{
             borderColor: Colors.gray300,
             borderWidth: 0.5,
-            borderStyle: "dashed",
+            borderStyle: 'dashed',
           }}
         />
         <View paddingV-s6>
           <TouchableOpacity row activeOpacity={0.6}>
-            <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+            <IconSvg name='SendCircleSVG' color={Colors.gray500} width={24} height={24} />
             <Text gray500 regular marginL-s2>
               Hướng dẫn đi đường
             </Text>
@@ -68,9 +72,9 @@ function DirectionInstruction() {
 
       <View row marginB-s4>
         <Image
-          assetGroup="demo"
-          assetName="coffee"
-          resizeMode="cover"
+          assetGroup='demo'
+          assetName='coffee'
+          resizeMode='cover'
           style={{
             borderRadius: BorderRadiuses.br8,
           }}
@@ -85,7 +89,7 @@ function DirectionInstruction() {
               Mr.Good Tea &amp; Coffee
             </Text>
             <View marginT-s1>
-              <IconSvg name="CoffeeSVG" color={Colors.gray500} width={16} height={16} />
+              <IconSvg name='CoffeeSVG' color={Colors.gray500} width={16} height={16} />
             </View>
           </View>
 
@@ -95,7 +99,7 @@ function DirectionInstruction() {
 
           <View row centerV marginT-s3 marginR-s2>
             <View row centerV marginR-s3>
-              <IconSvg name="SendSVG" color={Colors.blue500} />
+              <IconSvg name='SendSVG' color={Colors.blue500} />
               <Text small blue500 marginL-s1>
                 1.2 km
               </Text>
@@ -108,7 +112,7 @@ function DirectionInstruction() {
             </View>
 
             <View row>
-              <IconSvg name="CarFrontSVG" color={Colors.gray500} />
+              <IconSvg name='CarFrontSVG' color={Colors.gray500} />
               <View
                 width={0}
                 height={16}
@@ -118,7 +122,7 @@ function DirectionInstruction() {
                   borderWidth: 0.5,
                 }}
               />
-              <IconSvg name="MotorBikeSVG" color={Colors.gray500} />
+              <IconSvg name='MotorBikeSVG' color={Colors.gray500} />
             </View>
           </View>
         </View>
@@ -139,7 +143,7 @@ function DirectionInstruction() {
           <Text regular gray500 marginR-s2>
             2 tuyến đường khác
           </Text>
-          <IconSvg name="ExpandMoreSVG" color={Colors.gray500} width={16} height={16} />
+          <IconSvg name='ExpandMoreSVG' color={Colors.gray500} width={16} height={16} />
         </View>
       </View>
     </View>

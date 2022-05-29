@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
 import MapView, { Callout, Heatmap, Marker, Polyline, Geojson } from 'react-native-maps';
 import { Assets, View, Image, Text, Colors } from 'react-native-ui-lib';
@@ -6,10 +6,14 @@ import { useSelector } from 'react-redux';
 import MarkerDanger from './MarkerDanger';
 
 import floodData from '../../../assets/files/csvjson';
+import { setPolylines, setMarkerLocation } from '../store/mapStore';
+
+import { useDispatch } from 'react-redux';
 
 const windowHeight = Dimensions.get('screen').height;
 
 function MapMain() {
+  const dispatch = useDispatch();
   const customMapStyle = [
     {
       featureType: 'landscape.natural',
@@ -40,9 +44,22 @@ function MapMain() {
     },
   ];
 
-  const polyline = useSelector((state) => state.polyline);
-  const marker = useSelector((state) => state.marker);
+  const polylines = useSelector((state) => state.polylines);
+  const markerDanger = useSelector((state) => state.markerDanger);
+  const markerLocation = useSelector((state) => state.markerLocation);
   const shownNote = useSelector((state) => state.shownNote);
+
+  const handleClickMapView = (e) => {
+    const coordinate = e.nativeEvent.coordinate;
+    dispatch(setMarkerLocation([...markerLocation, ...[coordinate]]));
+  };
+
+  const handleDragEndMarker = (e, index) => {
+    const coordinate = e.nativeEvent.coordinate;
+    const newMarkers = [...markerLocation];
+    newMarkers[index] = coordinate;
+    dispatch(setMarkerLocation([...newMarkers]));
+  };
 
   return (
     <View absF marginB-180 bg-blue300>
@@ -59,9 +76,8 @@ function MapMain() {
         showsUserLocation={true}
         showsCompass={true}
         customMapStyle={customMapStyle}
+        onPress={(e) => handleClickMapView(e)}
       >
-        {myMapKmz ? <Geojson geojson={myMapKmz} /> : null}
-
         <Heatmap
           points={floodData}
           gradient={{
@@ -90,9 +106,20 @@ function MapMain() {
           opacity={1}
         />
 
-        <Polyline coordinates={polyline.points} strokeColor={polyline.strokeColor} strokeWidth={polyline.strokeWidth} />
+        {polylines.map((polyline) => {
+          console.log('jhehehe');
+          if (polyline.points.length > 0)
+            return (
+              <Polyline
+                key={JSON.stringify(polyline.points)}
+                coordinates={polyline.points}
+                strokeColor={polyline.strokeColor}
+                strokeWidth={polyline.strokeWidth}
+              />
+            );
+        })}
 
-        {marker.points.map((point, index) => (
+        {markerDanger.points?.map((point, index) => (
           <Marker
             coordinate={point}
             key={index}
@@ -101,7 +128,7 @@ function MapMain() {
               y: 0.5,
             }}
           >
-            <MarkerDanger image={marker.image} icon={marker.icon} />
+            <MarkerDanger image={markerDanger.image} icon={markerDanger.icon} />
             <Callout tooltip>
               <View width={300} backgroundColor={Colors.white} br4 md padding-8>
                 <Text>{point.name}</Text>
@@ -111,6 +138,9 @@ function MapMain() {
               </View>
             </Callout>
           </Marker>
+        ))}
+        {markerLocation.map((point, index) => (
+          <Marker draggable={true} coordinate={point} key={index} onDragEnd={(e) => handleDragEndMarker(e, index)} />
         ))}
       </MapView>
     </View>

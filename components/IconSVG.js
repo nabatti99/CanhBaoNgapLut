@@ -33,6 +33,8 @@ const iconSvgLoaders = {
   StarOutlineSVG: lazyLoad(() => import('../assets/icons/star_outline.svg')),
   StartLocationSVG: lazyLoad(() => import('../assets/icons/start_location.svg')),
   WarningSVG: lazyLoad(() => import('../assets/icons/warning.svg')),
+  DoneSVG: lazyLoad(() => import('../assets/icons/done.svg')),
+  ReportProblemSVG: lazyLoad(() => import('../assets/icons/report_problem.svg')),
 };
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, ...props }) {

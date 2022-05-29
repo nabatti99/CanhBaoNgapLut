@@ -4,13 +4,15 @@ import { Colors } from 'react-native-ui-lib';
 const mapSlice = createSlice({
   name: 'map',
   initialState: {
-    polyline: {
-      strokeColor: Colors.blue300,
-      strokeWidth: 4,
-      points: [],
-    },
+    polylines: [
+      {
+        strokeColor: Colors.blue300,
+        strokeWidth: 4,
+        points: [],
+      },
+    ],
 
-    marker: {
+    markerDanger: {
       image: null,
       icon: null,
       points: [
@@ -34,6 +36,9 @@ const mapSlice = createSlice({
         },
       ],
     },
+    // direction
+    markerLocation: [],
+    directionInfor: {},
 
     shownNote: true,
 
@@ -45,18 +50,23 @@ const mapSlice = createSlice({
     },
   },
   reducers: {
-    setPolyline: (state, action) => {
-      state.polyline = {
-        ...state.polyline,
+    setPolylines: (state, action) => {
+      state.polylines = [...action.payload];
+    },
+    setMarkerDanger: (state, action) => {
+      state.markerDanger = {
+        ...state.markerDanger,
         ...action.payload,
       };
     },
-    setMarker: (state, action) => {
-      state.marker = {
-        ...state.marker,
-        ...action.payload,
-      };
+
+    setMarkerLocation: (state, action) => {
+      state.markerLocation = [...action.payload];
     },
+    setDirectionInfor: (state, action) => {
+      state.directionInfor = { ...action.payload };
+    },
+
     setTopInput: (state, action) => {
       state.topInput = {
         ...state.topInput,
@@ -78,4 +88,12 @@ const mapStore = configureStore({
 
 export default mapStore;
 
-export const { setPolyline, setMarker, setTopInput, setShownNote, handleTopInputChanged } = mapSlice.actions;
+export const {
+  setPolylines,
+  setMarkerDanger,
+  setDirectionInfor,
+  setMarkerLocation,
+  setTopInput,
+  setShownNote,
+  handleTopInputChanged,
+} = mapSlice.actions;
