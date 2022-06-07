@@ -107,7 +107,6 @@ function MapMain() {
         />
 
         {polylines.map((polyline) => {
-          console.log('jhehehe');
           if (polyline.points.length > 0)
             return (
               <Polyline

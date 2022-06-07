@@ -17,9 +17,9 @@ const mapSlice = createSlice({
       icon: null,
       points: [
         {
-          latitude: 16.05586,
-          longitude: 108.14843,
-          name: 'alskdjlasdkl',
+          latitude: 16.020382,
+          longitude: 108.21141,
+          name: 'hahahahah',
           abc: 'sadlknaskld',
         },
         {
