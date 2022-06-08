@@ -1,54 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Colors, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setPolylines, setDirectionInfor, setMarkerLocation } from '../store/mapStore';
+import { setPolylines, setDirectionInfors, setMarkerLocation } from '../store/mapStore';
 import IconSvg from '../../../components/IconSVG';
 import * as directionApi from '../../../apis/direction.api';
 import polylineMap from '@mapbox/polyline';
 
 function Direction() {
+  const [routeIndex, setRouteIndex] = useState(0);
+
   const dispatch = useDispatch();
 
   const markerLocation = useSelector((state) => state.markerLocation);
   const markerDanger = useSelector((state) => state.markerDanger);
-  const polylines = useSelector((state) => state.polylines);
+  const directionInfors = useSelector((state) => state.directionInfors);
 
   const fetchDirection = async () => {
     try {
       const result = await directionApi.direction(markerLocation);
 
-      const directionInfor = {
+      const routeInfors = {
         weight: result.routes[0].weight,
         duration: result.routes[0].duration,
         distance: result.routes[0].distance,
-        steps: [{ 'Điếm đi': result.waypoints[0].name }],
+        routes: [],
       };
-      // dispatch(
-      //   setDirectionInfor({
-      //     weight: result.routes[0].weight,
-      //     duration: result.routes[0].duration,
-      //     distance: result.routes[0].distance,
-      //     steps: [
-
-      //     ]
-      //   })
-      // );
-
       // setDirectionStep();
 
       const steps = result.routes.map((route, index) => {
+        const routeInfor = {
+          summary: route.legs[0].summary,
+          weight: route.legs[0].weight,
+          duration: route.legs[0].duration,
+          distance: route.legs[0].distance,
+          steps: [],
+        };
+
         const points = route.legs[0].steps.map((step) => {
           const data = polylineMap.decode(step.geometry);
+
+          routeInfor.steps.push({
+            name: step.name,
+            duration: step.duration.toFixed(),
+            distance: step.distance.toFixed(),
+            modifier: step.maneuver.modifier,
+            type: step.maneuver.type,
+          });
+
           return data.map((item) => {
             return { latitude: item[0], longitude: item[1] };
           });
         });
 
+        routeInfors.routes.push(routeInfor);
+
         const data = {
-          strokeColor: index == 0 ? Colors.blue300 : Colors.gray300,
+          strokeColor: index == routeIndex ? Colors.blue300 : Colors.gray300,
           // strokeColor: Colors.blue300,
-          strokeWidth: 4,
+          strokeWidth: 8,
           points: points.reduce(function (prev, next) {
             return prev.concat(next);
           }),
@@ -56,8 +66,6 @@ function Direction() {
 
         const check = (point) => {
           const d = distance(point, markerDanger.points[0]);
-          console.log(d);
-
           if (d < 100) {
             data.strokeColor = Colors.red600;
             return true;
@@ -69,6 +77,7 @@ function Direction() {
         return data;
       });
 
+      dispatch(setDirectionInfors({ ...routeInfors }));
       dispatch(setPolylines([...steps.reverse()]));
     } catch (error) {
       console.log(error);
@@ -76,13 +85,9 @@ function Direction() {
   };
 
   useEffect(() => {
-    try {
-      if (markerLocation.length > 1) {
-        fetchDirection();
-        // markerDanger.points.forEach((point) => {});
-      }
-    } catch (error) {
-      console.log(error);
+    if (markerLocation.length > 1) {
+      fetchDirection();
+      // markerDanger.points.forEach((point) => {});
     }
   }, [markerLocation]);
 
@@ -122,18 +127,32 @@ function Direction() {
           <TouchableOpacity row activeOpacity={0.6}>
             <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
             <Text gray500 regular marginL-s2>
-              Hướng dẫn đi đường
+              Điểm đi:
             </Text>
-          </TouchableOpacity>
-        </View>
-        <View paddingB-s6>
-          <TouchableOpacity row activeOpacity={0.6}>
-            <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
             <Text gray500 regular marginL-s2>
-              Hướng dẫn đi đường
+              {/* {directionInfors} */}
             </Text>
           </TouchableOpacity>
         </View>
+        {directionInfors.routes.length > 0
+          ? directionInfors.routes[routeIndex].steps.map((step, index) => {
+              const duration = step.duration;
+              const distance = step.distance;
+              return (
+                <View key={index} paddingB-s6>
+                  <TouchableOpacity row activeOpacity={0.6}>
+                    <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+                    <Text gray500 regular marginL-s2>
+                      {`${step.modifier} ${step.type}`}
+                    </Text>
+                    <Text gray500 regular marginL-s2>
+                      {step.name}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          : null}
       </View>
       <View row>
         <View

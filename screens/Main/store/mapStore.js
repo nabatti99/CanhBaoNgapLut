@@ -38,7 +38,12 @@ const mapSlice = createSlice({
     },
     // direction
     markerLocation: [],
-    directionInfor: {},
+    directionInfors: {
+      weight: '',
+      duration: '',
+      distance: '',
+      routes: [],
+    },
 
     shownNote: true,
 
@@ -63,8 +68,8 @@ const mapSlice = createSlice({
     setMarkerLocation: (state, action) => {
       state.markerLocation = [...action.payload];
     },
-    setDirectionInfor: (state, action) => {
-      state.directionInfor = { ...action.payload };
+    setDirectionInfors: (state, action) => {
+      state.directionInfors = { ...action.payload };
     },
 
     setTopInput: (state, action) => {
@@ -91,7 +96,7 @@ export default mapStore;
 export const {
   setPolylines,
   setMarkerDanger,
-  setDirectionInfor,
+  setDirectionInfors,
   setMarkerLocation,
   setTopInput,
   setShownNote,
