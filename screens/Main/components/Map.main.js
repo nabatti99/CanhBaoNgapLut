@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions } from 'react-native';
 import MapView, { Callout, Heatmap, Marker, Polyline, Geojson } from 'react-native-maps';
 import { Assets, View, Image, Text, Colors } from 'react-native-ui-lib';
@@ -14,6 +14,9 @@ const windowHeight = Dimensions.get('screen').height;
 
 function MapMain() {
   const dispatch = useDispatch();
+
+  const refMap = useRef(null);
+
   const customMapStyle = [
     {
       featureType: 'landscape.natural',
@@ -61,9 +64,42 @@ function MapMain() {
     dispatch(setMarkerLocation([...newMarkers]));
   };
 
+  const handleClickPolyline = (index) => {
+    const newPolylines = polylines.map((item, i) => {
+      const polyline = { ...item };
+
+      if (polyline.strokeColor === Colors.red600) polyline.strokeColor = Colors.red600;
+      else if (i === index) polyline.strokeColor = Colors.blue300;
+      else polyline.strokeColor = Colors.gray300;
+
+      return polyline;
+    });
+
+    const p = newPolylines[newPolylines.length - 1];
+    newPolylines[newPolylines.length - 1] = newPolylines[index];
+    newPolylines[index] = p;
+
+    dispatch(setPolylines([...newPolylines]));
+  };
+
+  useEffect(() => {
+    const a = polylines.length;
+    if (a > 0) {
+      refMap.current.fitToCoordinates(polylines[a - 1].points, {
+        edgePadding: {
+          top: 80,
+          right: 80,
+          bottom: 80,
+          left: 80,
+        },
+      });
+    }
+  }, [polylines]);
+
   return (
     <View absF marginB-180 bg-blue300>
       <MapView
+        ref={refMap}
         style={{
           height: windowHeight - 198,
         }}
@@ -106,14 +142,16 @@ function MapMain() {
           opacity={1}
         />
 
-        {polylines.map((polyline) => {
+        {polylines.map((polyline, index) => {
           if (polyline.points.length > 0)
             return (
               <Polyline
-                key={JSON.stringify(polyline.points)}
+                tappable={true}
+                key={index}
                 coordinates={polyline.points}
                 strokeColor={polyline.strokeColor}
                 strokeWidth={polyline.strokeWidth}
+                onPress={() => handleClickPolyline(index)}
               />
             );
         })}

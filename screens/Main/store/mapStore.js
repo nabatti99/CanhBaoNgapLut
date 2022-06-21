@@ -9,6 +9,7 @@ const mapSlice = createSlice({
         strokeColor: Colors.blue300,
         strokeWidth: 4,
         points: [],
+        routes: [],
       },
     ],
 
