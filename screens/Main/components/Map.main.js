@@ -65,15 +65,7 @@ function MapMain() {
   };
 
   const handleClickPolyline = (index) => {
-    const newPolylines = polylines.map((item, i) => {
-      const polyline = { ...item };
-
-      if (polyline.strokeColor === Colors.red600) polyline.strokeColor = Colors.red600;
-      else if (i === index) polyline.strokeColor = Colors.blue300;
-      else polyline.strokeColor = Colors.gray300;
-
-      return polyline;
-    });
+    const newPolylines = [...polylines];
 
     const p = newPolylines[newPolylines.length - 1];
     newPolylines[newPolylines.length - 1] = newPolylines[index];
@@ -149,7 +141,11 @@ function MapMain() {
                 tappable={true}
                 key={index}
                 coordinates={polyline.points}
-                strokeColor={polyline.strokeColor}
+                strokeColor={
+                  index === polylines.length - 1 && polyline.strokeColor != Colors.red600
+                    ? Colors.blue300
+                    : polyline.strokeColor
+                }
                 strokeWidth={polyline.strokeWidth}
                 onPress={() => handleClickPolyline(index)}
               />

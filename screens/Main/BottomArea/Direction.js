@@ -6,9 +6,10 @@ import { setPolylines, setDirectionInfors, setMarkerLocation } from '../store/ma
 import IconSvg from '../../../components/IconSVG';
 import * as directionApi from '../../../apis/direction.api';
 import polylineMap from '@mapbox/polyline';
+import osrmTextInstructions from 'osrm-text-instructions';
 
 function Direction() {
-  const [routeIndex, setRouteIndex] = useState(0);
+  const [isDanger, setIsDanger] = useState(false); // false is not danger
 
   const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ function Direction() {
       // };
       // setDirectionStep();
 
-      const steps = result.routes.map((route, index) => {
+      const routes = result.routes.map((route, index) => {
         const routeInfor = {
           summary: route.legs[0].summary,
           weight: route.legs[0].weight,
@@ -38,49 +39,65 @@ function Direction() {
           steps: [],
         };
 
-        const points = route.legs[0].steps.map((step) => {
-          const data = polylineMap.decode(step.geometry);
+        // const points = route.legs[0].steps.map((step) => {
+        //   const data = polylineMap.decode(step.geometry);
 
-          routeInfor.steps.push({
-            name: step.name,
-            duration: step.duration.toFixed(),
-            distance: step.distance.toFixed(),
-            modifier: step.maneuver.modifier,
-            type: step.maneuver.type,
+        //   routeInfor.steps.push({
+        //     name: step.name,
+        //     duration: step.duration.toFixed(),
+        //     distance: step.distance.toFixed(),
+        //     modifier: step.maneuver.modifier,
+        //     type: step.maneuver.type,
+        //   });
+
+        //   return data.map((item) => {
+        //     return { latitude: item[0], longitude: item[1] };
+        //   });
+        // });
+
+        return route.legs.map((leg, index) => {
+          const points = leg.steps.map((step) => {
+            const data = polylineMap.decode(step.geometry);
+
+            routeInfor.steps.push(step);
+
+            return data.map((item) => {
+              return { latitude: item[0], longitude: item[1] };
+            });
           });
 
-          return data.map((item) => {
-            return { latitude: item[0], longitude: item[1] };
-          });
+          const data = {
+            strokeColor: Colors.gray300,
+            // strokeColor: Colors.blue300,
+            strokeWidth: 8,
+            points: points.reduce(function (prev, next) {
+              return prev.concat(next);
+            }),
+            routes: routeInfor,
+          };
+
+          const check = (point) => {
+            const d = distance(point, markerDanger.points[0]);
+            if (d < 100) {
+              data.strokeColor = Colors.red600;
+              return true;
+            }
+          };
+
+          data.points.some(check);
+
+          return data;
         });
 
         // routeInfors.routes.push(routeInfor);
+      });
 
-        const data = {
-          strokeColor: index == routeIndex ? Colors.blue300 : Colors.gray300,
-          // strokeColor: Colors.blue300,
-          strokeWidth: 8,
-          points: points.reduce(function (prev, next) {
-            return prev.concat(next);
-          }),
-          routes: routeInfor,
-        };
-
-        const check = (point) => {
-          const d = distance(point, markerDanger.points[0]);
-          if (d < 100) {
-            data.strokeColor = Colors.red600;
-            return true;
-          }
-        };
-
-        data.points.some(check);
-
-        return data;
+      const listRoute = routes.reduce(function (prev, next) {
+        return prev.concat(next);
       });
 
       // dispatch(setDirectionInfors({ ...routeInfors }));
-      dispatch(setPolylines([...steps.reverse()]));
+      dispatch(setPolylines([...listRoute.reverse()]));
     } catch (error) {
       console.log(error);
     }
@@ -92,6 +109,14 @@ function Direction() {
       // markerDanger.points.forEach((point) => {});
     }
   }, [markerLocation]);
+
+  useEffect(() => {
+    if (polylines[polylines.length - 1].strokeColor === Colors.red600) {
+      setIsDanger(true);
+    } else {
+      setIsDanger(false);
+    }
+  }, [polylines]);
 
   const distance = (point1, point2) => {
     const lat1 = point1.latitude;
@@ -126,17 +151,12 @@ function Direction() {
           }}
         />
         {polylines[polylines.length - 1].routes.steps?.map((step, index) => {
-          const duration = step.duration;
-          const distance = step.distance;
           return (
             <View key={index} paddingB-s6>
               <TouchableOpacity row activeOpacity={0.6}>
                 <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
                 <Text gray500 regular marginL-s2>
-                  {`${step.modifier} ${step.type}`}
-                </Text>
-                <Text gray500 regular marginL-s2>
-                  {step.name}
+                  {osrmTextInstructions('v5').compile('vi', step)}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -150,12 +170,12 @@ function Direction() {
           padding-s2
           br4
           style={{
-            borderColor: Colors.green500,
+            borderColor: isDanger ? Colors.red600 : Colors.green500,
             borderWidth: 0.5,
           }}
         >
-          <Text regular green500>
-            Đường đi an toàn
+          <Text regular color={isDanger ? Colors.red600 : Colors.green500}>
+            {isDanger ? 'Đường đi nguy hiểm' : 'Đường đi an toàn'}
           </Text>
           <IconSvg name="DoneSVG" color={Colors.gray500} width={24} height={24} />
         </View>
