@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { BorderRadiuses, Colors, Image, Shadows, Text, View } from "react-native-ui-lib";
-import Svg, { Circle } from "react-native-svg";
-import { useNavigate } from "react-router";
+import React, { useEffect } from 'react';
+import { BorderRadiuses, Colors, Image, Shadows, Text, View } from 'react-native-ui-lib';
+import Svg, { Circle } from 'react-native-svg';
+import { useNavigate } from 'react-router';
 
-import CanhBaoNgapLutSVG from "../../assets/pictures/canh_bao_ngap_lut.svg";
-import WaveLineSVG from "../../assets/pictures/wave_line.svg";
-import WarningSplashSVG from "../../assets/pictures/warning_splash.svg";
-import Wave1SVG from "../../assets/pictures/wave1.svg";
-import Wave2SVG from "../../assets/pictures/wave2.svg";
+import CanhBaoNgapLutSVG from '../../assets/pictures/canh_bao_ngap_lut.svg';
+import WaveLineSVG from '../../assets/pictures/wave_line.svg';
+import WarningSplashSVG from '../../assets/pictures/warning_splash.svg';
+import Wave1SVG from '../../assets/pictures/wave1.svg';
+import Wave2SVG from '../../assets/pictures/wave2.svg';
 
 function MainSplashScreen() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function MainSplashScreen() {
   useEffect(() => {
     setTimeout(() => {
       console.log(123);
-      navigate("/Splash1", { replace: true });
+      navigate('/Splash1', { replace: true });
     }, 1000);
   }, []);
 
@@ -57,13 +57,13 @@ function MainSplashScreen() {
           shadowColor: Colors.gray300,
           borderTopLeftRadius: BorderRadiuses.br32,
           borderTopRightRadius: BorderRadiuses.br32,
-          overflow: "hidden",
+          overflow: 'hidden',
         }}
       >
         <View paddingH-s6>
           <Text
             style={{
-              fontFamily: "LatoBold",
+              fontFamily: 'LatoBold',
               fontSize: 16,
             }}
             gray400
@@ -77,7 +77,7 @@ function MainSplashScreen() {
             gray400
             marginT-8
             style={{
-              fontFamily: "BeVNProLight",
+              fontFamily: 'BeVNProLight',
               fontSize: 16,
             }}
           >

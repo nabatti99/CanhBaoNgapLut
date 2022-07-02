@@ -11,7 +11,7 @@ import IconSvg from '../../../../components/IconSVG';
  * @param {String} placeholder
  * @returns
  */
-function TopInput({ value, onTextChange, leftIconName, label, placeholder }) {
+function TopInput({ value, onTextChange, leftIconName, label, placeholder, onFocus, onBlur }) {
   const handleTextChanged = (newValue) => {
     onTextChange(newValue);
   };
@@ -31,6 +31,8 @@ function TopInput({ value, onTextChange, leftIconName, label, placeholder }) {
       </View>
       <View width={1} height="100%" bg-gray200 marginR-s2 />
       <Incubator.TextField
+        onFocus={onFocus}
+        onBlur={onBlur}
         placeholder={placeholder}
         placeholderTextColor={Colors.blue300}
         strong
