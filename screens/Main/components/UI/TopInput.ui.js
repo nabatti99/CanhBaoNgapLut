@@ -1,6 +1,6 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
-import { Colors, Incubator, Text, View } from "react-native-ui-lib";
-import IconSvg from "../../../../components/IconSVG";
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Colors, Incubator, Text, View } from 'react-native-ui-lib';
+import IconSvg from '../../../../components/IconSVG';
 
 /**
  * Top Input on every screens
@@ -20,7 +20,7 @@ function TopInput({ value, onTextChange, leftIconName, label, placeholder }) {
   if (value) inputColor = Colors.blue500;
 
   return (
-    <View bg-gray50 br8 row centerV paddingH-s4 paddingV-s3>
+    <View bg-gray50 br8 row centerV paddingH-s2 paddingV-s2>
       <View marginR-s2 row>
         <Suspense fallback={null}>
           <IconSvg name={leftIconName} color={inputColor} width={24} height={24} />

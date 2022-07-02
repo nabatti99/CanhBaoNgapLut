@@ -4,12 +4,14 @@ import MyLocation from './MyLocation';
 import NoteMenu from './NoteMenu';
 import RainMenu from './RainMenu';
 import Report from './Report';
+import SearchBar from './SearchBar';
 
 const TopPart = () => {
   return (
     <View row spread>
-      <View>
+      <View flex paddingR-s2>
         <NoteMenu />
+        <SearchBar />
       </View>
       <View right>
         <View>
