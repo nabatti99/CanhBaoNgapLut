@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, TouchableOpacity, TouchableOpacityBase } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import TopInput from '../components/UI/TopInput.ui';
 import { Colors, Incubator, Text, View, Spacings, BorderRadiuses } from 'react-native-ui-lib';
 import ItemSearchPlace from '../components/ItemSearchPlace';
@@ -11,12 +11,15 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import * as PlaceApi from '../../../apis/place.api';
-import { useEffect } from 'react';
-import { useCallback } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setMarkerLocation } from '../store/mapStore';
 // const data = [1, 2, 312321, 32, 12, 3, 123, 12, 3, 12, 3];
 
 const SearchBar = () => {
+  const dispatch = useDispatch();
+  const markerLocation = useSelector((state) => state.markerLocation);
+
   const [txtSearch, setTxtSearch] = useState('');
   const [data, setData] = useState(['Không có kết quả']);
   const [isfocus, setIsfocus] = useState(false);
@@ -40,9 +43,13 @@ const SearchBar = () => {
       console.log('newValue', newValue);
       const response = await PlaceApi.search(newValue);
       const result = response?.map((res) => {
-        return res.display_name;
+        return {
+          display_name: res.display_name,
+          lat: res.lat,
+          lon: res.lon,
+        };
       });
-      console.log(result);
+
       setData(result);
     } catch (error) {
       console.log(error);
@@ -71,6 +78,17 @@ const SearchBar = () => {
     }
   }, []);
 
+  const handleClickItemResltSearch = (item) => {
+    setTxtSearch(item.display_name);
+    setIsfocus(false);
+    const coordinate = {
+      latitude: Number(item.lat),
+      longitude: Number(item.lon),
+    };
+    console.log('cc', markerLocation);
+    dispatch(setMarkerLocation([...markerLocation, ...[{ coordinate }]]));
+  };
+
   return (
     <View style={styles.container}>
       <TopInput
@@ -89,12 +107,7 @@ const SearchBar = () => {
           renderItem={({ item, index }) => {
             const isLast = index === data.length - 1;
             return (
-              <TouchableOpacity
-                onPress={() => {
-                  setTxtSearch(item);
-                  setIsfocus(false);
-                }}
-              >
+              <TouchableOpacity onPress={() => handleClickItemResltSearch(item)}>
                 <ItemSearchPlace item={item} isLast={isLast} />
               </TouchableOpacity>
             );

@@ -38,7 +38,12 @@ const mapSlice = createSlice({
       ],
     },
     // direction
-    markerLocation: [],
+    markerLocation: [
+      // {
+      //   currentPosition: true,
+      //   coordinate: {}
+      // }
+    ],
     directionInfors: {
       weight: '',
       duration: '',

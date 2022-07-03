@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Dimensions, PermissionsAndroid, Platform } from 'react-native';
 import MapView, { Callout, Heatmap, Marker, Polyline, Geojson } from 'react-native-maps';
 import { Assets, View, Image, Text, Colors } from 'react-native-ui-lib';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import floodData from '../../../assets/files/csvjson';
 import { setPolylines, setMarkerLocation } from '../store/mapStore';
 
 import { useDispatch } from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
 
 const windowHeight = Dimensions.get('screen').height;
 
@@ -54,13 +55,17 @@ function MapMain() {
 
   const handleClickMapView = (e) => {
     const coordinate = e.nativeEvent.coordinate;
-    dispatch(setMarkerLocation([...markerLocation, ...[coordinate]]));
+    dispatch(setMarkerLocation([...markerLocation, ...[{ coordinate }]]));
   };
 
   const handleDragEndMarker = (e, index) => {
     const coordinate = e.nativeEvent.coordinate;
     const newMarkers = [...markerLocation];
-    newMarkers[index] = coordinate;
+    newMarkers[index] = {
+      currentPosition: newMarkers[index].currentPosition,
+      coordinate,
+    };
+
     dispatch(setMarkerLocation([...newMarkers]));
   };
 
@@ -79,21 +84,56 @@ function MapMain() {
     if (a > 0) {
       refMap.current.fitToCoordinates(polylines[a - 1].points, {
         edgePadding: {
-          top: 80,
-          right: 80,
-          bottom: 80,
-          left: 80,
+          top: 120,
+          right: 40,
+          bottom: 240,
+          left: 40,
         },
       });
     }
   }, [polylines]);
+
+  const requestPermissions = useCallback(async () => {
+    if (Platform.OS === 'ios') {
+      Geolocation.requestAuthorization();
+      Geolocation.setRNConfiguration({
+        skipPermissionRequests: false,
+        authorizationLevel: 'whenInUse',
+      });
+    }
+  }, []);
+
+  const fecthCurrentPosition = useCallback(async () => {
+    try {
+      await requestPermissions();
+      Geolocation.getCurrentPosition(
+        (info) => {
+          const current = {
+            currentPosition: true,
+            coordinate: {
+              latitude: info.coords.latitude,
+              longitude: info.coords.longitude,
+            },
+          };
+          dispatch(setMarkerLocation([current]));
+        },
+        (err) => console.log(err)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fecthCurrentPosition();
+  }, []);
 
   return (
     <View absF marginB-180 bg-blue300>
       <MapView
         ref={refMap}
         style={{
-          height: windowHeight - 198,
+          height: windowHeight,
         }}
         initialRegion={{
           latitude: 15.5,
@@ -104,7 +144,8 @@ function MapMain() {
         showsUserLocation={true}
         showsCompass={true}
         customMapStyle={customMapStyle}
-        onPress={(e) => handleClickMapView(e)}
+        showsMyLocationButton={false}
+        onLongPress={(e) => handleClickMapView(e)}
       >
         <Heatmap
           points={floodData}
@@ -135,21 +176,26 @@ function MapMain() {
         />
 
         {polylines.map((polyline, index) => {
-          if (polyline.points.length > 0)
+          if (polyline.points.length > 0) {
+            const strokeColor =
+              index === polylines.length - 1
+                ? polyline.strokeColor != Colors.red600
+                  ? Colors.blue300
+                  : Colors.red600
+                : polyline.strokeColor === Colors.red600
+                ? Colors.red300
+                : polyline.strokeColor;
             return (
               <Polyline
                 tappable={true}
                 key={index}
                 coordinates={polyline.points}
-                strokeColor={
-                  index === polylines.length - 1 && polyline.strokeColor != Colors.red600
-                    ? Colors.blue300
-                    : polyline.strokeColor
-                }
+                strokeColor={strokeColor}
                 strokeWidth={polyline.strokeWidth}
                 onPress={() => handleClickPolyline(index)}
               />
             );
+          }
         })}
 
         {markerDanger.points?.map((point, index) => (
@@ -172,9 +218,18 @@ function MapMain() {
             </Callout>
           </Marker>
         ))}
-        {markerLocation.map((point, index) => (
-          <Marker draggable={true} coordinate={point} key={index} onDragEnd={(e) => handleDragEndMarker(e, index)} />
-        ))}
+        {markerLocation.map((marker, index) => {
+          if (marker.currentPosition) return;
+          else
+            return (
+              <Marker
+                draggable={true}
+                coordinate={marker.coordinate}
+                key={index}
+                onDragEnd={(e) => handleDragEndMarker(e, index)}
+              />
+            );
+        })}
       </MapView>
     </View>
   );

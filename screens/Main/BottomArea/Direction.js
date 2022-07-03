@@ -7,6 +7,7 @@ import IconSvg from '../../../components/IconSVG';
 import * as directionApi from '../../../apis/direction.api';
 import polylineMap from '@mapbox/polyline';
 import osrmTextInstructions from 'osrm-text-instructions';
+import { ScrollView } from 'react-native';
 
 function Direction() {
   const [isDanger, setIsDanger] = useState(false); // false is not danger
@@ -136,51 +137,53 @@ function Direction() {
   };
 
   return (
-    <View paddingH-s6>
-      <View marginV-s3 marginH-s1>
-        <View
-          width={0}
-          height="100%"
-          absL
-          marginL-11
-          style={{
-            borderColor: Colors.gray300,
-            borderWidth: 0.5,
-            borderStyle: 'dashed',
-            borderRadius: 1,
-          }}
-        />
-        {polylines[polylines.length - 1].routes.steps?.map((step, index) => {
-          return (
-            <View key={index} paddingB-s6>
-              <TouchableOpacity row activeOpacity={0.6}>
-                <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
-                <Text gray500 regular marginL-s2>
-                  {osrmTextInstructions('v5').compile('vi', step)}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
-      </View>
-      <View row>
-        <View
-          row
-          centerV
-          padding-s2
-          br4
-          style={{
-            borderColor: isDanger ? Colors.red600 : Colors.green500,
-            borderWidth: 0.5,
-          }}
-        >
-          <Text regular color={isDanger ? Colors.red600 : Colors.green500}>
-            {isDanger ? 'Đường đi nguy hiểm' : 'Đường đi an toàn'}
-          </Text>
-          <IconSvg name="DoneSVG" color={Colors.gray500} width={24} height={24} />
+    <ScrollView>
+      <View paddingH-s6 paddingB-s3>
+        <View marginV-s3 marginH-s1>
+          <View
+            width={0}
+            height="100%"
+            absL
+            marginL-11
+            style={{
+              borderColor: Colors.gray300,
+              borderWidth: 0.5,
+              borderStyle: 'dashed',
+              borderRadius: 1,
+            }}
+          />
+          {polylines[polylines.length - 1].routes.steps?.map((step, index) => {
+            return (
+              <View key={index} paddingB-s6>
+                <TouchableOpacity row activeOpacity={0.6}>
+                  <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+                  <Text gray500 regular marginL-s2>
+                    {osrmTextInstructions('v5').compile('vi', step)}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </View>
+        <View row>
+          <View
+            row
+            centerV
+            padding-s2
+            br4
+            style={{
+              borderColor: isDanger ? Colors.red600 : Colors.green500,
+              borderWidth: 0.5,
+            }}
+          >
+            <Text regular color={isDanger ? Colors.red600 : Colors.green500}>
+              {isDanger ? 'Đường đi nguy hiểm' : 'Đường đi an toàn'}
+            </Text>
+            <IconSvg name="DoneSVG" color={Colors.gray500} width={24} height={24} />
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
