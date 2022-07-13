@@ -176,26 +176,28 @@ function MapMain() {
         />
 
         {polylines.map((polyline, index) => {
-          if (polyline.points.length > 0) {
-            const strokeColor =
-              index === polylines.length - 1
-                ? polyline.strokeColor != Colors.red600
-                  ? Colors.blue300
-                  : Colors.red600
-                : polyline.strokeColor === Colors.red600
-                ? Colors.red300
-                : polyline.strokeColor;
-            return (
-              <Polyline
-                tappable={true}
-                key={index}
-                coordinates={polyline.points}
-                strokeColor={strokeColor}
-                strokeWidth={polyline.strokeWidth}
-                onPress={() => handleClickPolyline(index)}
-              />
-            );
-          }
+          return polyline.map((p, i) => {
+            if (p.points.length > 0) {
+              const strokeColor =
+                index === polylines.length - 1
+                  ? p.strokeColor != Colors.red600
+                    ? Colors.blue300
+                    : Colors.red600
+                  : p.strokeColor === Colors.red600
+                  ? Colors.red300
+                  : p.strokeColor;
+              return (
+                <Polyline
+                  tappable={true}
+                  key={i}
+                  coordinates={p.points}
+                  strokeColor={strokeColor}
+                  strokeWidth={p.strokeWidth}
+                  onPress={() => handleClickPolyline(index)}
+                />
+              );
+            }
+          });
         })}
 
         {markerDanger.points?.map((point, index) => (

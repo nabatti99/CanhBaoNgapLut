@@ -19,17 +19,51 @@ function Direction() {
   const directionInfors = useSelector((state) => state.directionInfors);
   const polylines = useSelector((state) => state.polylines);
 
+  const legsDirection = (legs) => {
+    return legs.map((leg, index) => {
+      const [steps, stepGeometry] = stepsDirection(leg.steps);
+
+      const data = {
+        strokeColor: Colors.gray300,
+        strokeWidth: 8,
+        points: steps.reduce(function (prev, next) {
+          return prev.concat(next);
+        }),
+        steps: stepGeometry,
+      };
+
+      const check = (point) => {
+        const d = distance(point, markerDanger.points[0]);
+        if (d < 100) {
+          data.strokeColor = Colors.red600;
+          return true;
+        }
+      };
+
+      data.points.some(check);
+
+      return data;
+    });
+  };
+
+  const stepsDirection = (steps) => {
+    const routeInfor = [];
+    const data = steps.map((step, index) => {
+      const data = polylineMap.decode(step.geometry);
+
+      routeInfor.push(step);
+
+      return data.map((item) => {
+        return { latitude: item[0], longitude: item[1] };
+      });
+    });
+
+    return [data, routeInfor];
+  };
+
   const fetchDirection = async () => {
     try {
       const result = await directionApi.direction(markerLocation);
-
-      // const routeInfors = {
-      //   weight: result.routes[0].weight,
-      //   duration: result.routes[0].duration,
-      //   distance: result.routes[0].distance,
-      //   routes: [],
-      // };
-      // setDirectionStep();
 
       const routes = result.routes.map((route, index) => {
         const routeInfor = {
@@ -40,65 +74,16 @@ function Direction() {
           steps: [],
         };
 
-        // const points = route.legs[0].steps.map((step) => {
-        //   const data = polylineMap.decode(step.geometry);
-
-        //   routeInfor.steps.push({
-        //     name: step.name,
-        //     duration: step.duration.toFixed(),
-        //     distance: step.distance.toFixed(),
-        //     modifier: step.maneuver.modifier,
-        //     type: step.maneuver.type,
-        //   });
-
-        //   return data.map((item) => {
-        //     return { latitude: item[0], longitude: item[1] };
-        //   });
-        // });
-
-        return route.legs.map((leg, index) => {
-          const points = leg.steps.map((step) => {
-            const data = polylineMap.decode(step.geometry);
-
-            routeInfor.steps.push(step);
-
-            return data.map((item) => {
-              return { latitude: item[0], longitude: item[1] };
-            });
-          });
-
-          const data = {
-            strokeColor: Colors.gray300,
-            // strokeColor: Colors.blue300,
-            strokeWidth: 8,
-            points: points.reduce(function (prev, next) {
-              return prev.concat(next);
-            }),
-            routes: routeInfor,
-          };
-
-          const check = (point) => {
-            const d = distance(point, markerDanger.points[0]);
-            if (d < 100) {
-              data.strokeColor = Colors.red600;
-              return true;
-            }
-          };
-
-          data.points.some(check);
-
-          return data;
-        });
+        return legsDirection(route.legs);
 
         // routeInfors.routes.push(routeInfor);
       });
 
-      const listRoute = routes.reduce(function (prev, next) {
-        return prev.concat(next);
-      });
-
+      // const listRoute = routes.reduce(function (prev, next) {
+      //   return prev.concat(next);
+      // });
       // dispatch(setDirectionInfors({ ...routeInfors }));
-      dispatch(setPolylines([...listRoute.reverse()]));
+      dispatch(setPolylines([...routes.reverse()]));
     } catch (error) {
       console.log(error);
     }
@@ -111,13 +96,13 @@ function Direction() {
     }
   }, [markerLocation]);
 
-  useEffect(() => {
-    if (polylines[polylines.length - 1].strokeColor === Colors.red600) {
-      setIsDanger(true);
-    } else {
-      setIsDanger(false);
-    }
-  }, [polylines]);
+  // useEffect(() => {
+  //   if (polylines[polylines.length - 1].strokeColor === Colors.red600) {
+  //     setIsDanger(true);
+  //   } else {
+  //     setIsDanger(false);
+  //   }
+  // }, [polylines]);
 
   const distance = (point1, point2) => {
     const lat1 = point1.latitude;
@@ -152,17 +137,19 @@ function Direction() {
               borderRadius: 1,
             }}
           />
-          {polylines[polylines.length - 1].routes.steps?.map((step, index) => {
-            return (
-              <View key={index} paddingB-s6>
-                <TouchableOpacity row activeOpacity={0.6}>
-                  <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
-                  <Text gray500 regular marginL-s2>
-                    {osrmTextInstructions('v5').compile('vi', step)}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
+          {polylines[polylines.length - 1].map((polyline) => {
+            return polyline.steps?.map((step, index) => {
+              return (
+                <View key={index} paddingB-s6>
+                  <TouchableOpacity row activeOpacity={0.6}>
+                    <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+                    <Text gray500 regular marginL-s2>
+                      {osrmTextInstructions('v5').compile('vi', step)}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            });
           })}
         </View>
         <View row>

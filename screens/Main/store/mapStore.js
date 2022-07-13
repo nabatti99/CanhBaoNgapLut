@@ -5,12 +5,14 @@ const mapSlice = createSlice({
   name: 'map',
   initialState: {
     polylines: [
-      {
-        strokeColor: Colors.blue300,
-        strokeWidth: 4,
-        points: [],
-        routes: [],
-      },
+      [
+        {
+          strokeColor: Colors.blue300,
+          strokeWidth: 4,
+          points: [],
+          routes: [],
+        },
+      ],
     ],
 
     markerDanger: {
