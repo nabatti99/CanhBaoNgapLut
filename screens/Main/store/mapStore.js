@@ -61,6 +61,8 @@ const mapSlice = createSlice({
       leftIconName: 'SendSVG',
       placeholder: '',
     },
+
+    showSearchSheet: false,
   },
   reducers: {
     setPolylines: (state, action) => {
@@ -92,6 +94,9 @@ const mapSlice = createSlice({
     setShownNote: (state, action) => {
       state.shownNote = action.payload;
     },
+    setShowSearchSheet: (state, action) => {
+      state.showSearchSheet = action.payload;
+    },
   },
 });
 
@@ -109,4 +114,5 @@ export const {
   setTopInput,
   setShownNote,
   handleTopInputChanged,
+  setShowSearchSheet,
 } = mapSlice.actions;

@@ -237,4 +237,4 @@ function MapMain() {
   );
 }
 
-export default MapMain;
+export default React.memo(MapMain);

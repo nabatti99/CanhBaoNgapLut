@@ -79,9 +79,6 @@ function Direction() {
         // routeInfors.routes.push(routeInfor);
       });
 
-      // const listRoute = routes.reduce(function (prev, next) {
-      //   return prev.concat(next);
-      // });
       // dispatch(setDirectionInfors({ ...routeInfors }));
       dispatch(setPolylines([...routes.reverse()]));
     } catch (error) {

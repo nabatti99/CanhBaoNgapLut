@@ -1,8 +1,8 @@
 import { FlatList, StyleSheet, TouchableOpacity, TouchableOpacityBase } from 'react-native';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import TopInput from '../components/UI/TopInput.ui';
+import TopInput from './TopInput.ui';
 import { Colors, Incubator, Text, View, Spacings, BorderRadiuses } from 'react-native-ui-lib';
-import ItemSearchPlace from '../components/ItemSearchPlace';
+import ItemSearchPlace from '../ItemSearchPlace';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,10 +10,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import * as PlaceApi from '../../../apis/place.api';
+import * as PlaceApi from '../../../../apis/place.api';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { setMarkerLocation } from '../store/mapStore';
+import { setMarkerLocation } from '../../store/mapStore';
 // const data = [1, 2, 312321, 32, 12, 3, 123, 12, 3, 12, 3];
 
 const SearchBar = () => {
@@ -32,8 +32,6 @@ const SearchBar = () => {
     return {
       backgroundColor: Colors.gray50,
       height: 'auto',
-      borderTopColor: Colors.blue500,
-      borderTopWidth: interpolate(processValue.value, [0, 1], [0, 0.5], Extrapolate.CLAMP),
       maxHeight: interpolate(processValue.value, [0, 1], [0, 200], Extrapolate.CLAMP),
     };
   }, []);
@@ -126,8 +124,7 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    width: '100%',
+    flex: 1,
     marginBottom: Spacings.s2,
     borderRadius: BorderRadiuses.br8,
     backgroundColor: Colors.gray50,
