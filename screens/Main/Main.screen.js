@@ -12,7 +12,7 @@ function MainScreen() {
   return (
     <Provider store={mapStore}>
       <View flex backgroundColor="black">
-        {/* <MapMain /> */}
+        <MapMain />
         {/* {style={{ zIndex: 1000, elevation: 100 }}} */}
         <View paddingH-24 paddingT-20 marginT-stb absT absH>
           <TopPart />

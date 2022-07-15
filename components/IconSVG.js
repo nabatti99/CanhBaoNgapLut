@@ -38,6 +38,9 @@ const iconSvgLoaders = {
   DoneSVG: lazyLoad(() => import('../assets/icons/done.svg')),
   ReportProblemSVG: lazyLoad(() => import('../assets/icons/report_problem.svg')),
   NewMessageSVG: lazyLoad(() => import('../assets/icons/new_message.svg')),
+  MutipleStopSVG: lazyLoad(() => import('../assets/icons/multiple_stop.svg')),
+  ScheduleSVG: lazyLoad(() => import('../assets/icons/schedule.svg')),
+  CarSVG: lazyLoad(() => import('../assets/icons/car.svg')),
 };
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, ...props }) {

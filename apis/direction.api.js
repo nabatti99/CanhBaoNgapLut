@@ -10,4 +10,12 @@ const direction = async (locations, query = '') => {
   return result.data;
 };
 
-export { direction };
+const infoDirection = async (locations) => {
+  const stringLocations = locations.map((location) => `${location.longitude},${location.latitude}`).join(';');
+  const url = `http://router.project-osrm.org/route/v1/driving/${stringLocations}?overview=false`;
+  console.log(url);
+  const result = await axios.get(url);
+  return result.data;
+};
+
+export { direction, infoDirection };

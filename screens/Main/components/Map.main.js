@@ -10,6 +10,8 @@ import { setPolylines, setMarkerLocation } from '../store/mapStore';
 
 import { useDispatch } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEY } from '../../../constants/constant';
 
 const windowHeight = Dimensions.get('screen').height;
 
@@ -116,6 +118,13 @@ function MapMain() {
             },
           };
           dispatch(setMarkerLocation([current]));
+          AsyncStorage.setItem(
+            STORAGE_KEY.CURRENT_POSITION,
+            JSON.stringify({
+              latitude: info.coords.latitude,
+              longitude: info.coords.longitude,
+            })
+          );
         },
         (err) => console.log(err)
       );

@@ -16,12 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMarkerLocation } from '../../store/mapStore';
 // const data = [1, 2, 312321, 32, 12, 3, 123, 12, 3, 12, 3];
 
-const SearchBar = () => {
+const SearchBar = ({ txtSearch, handleTextChange }) => {
   const dispatch = useDispatch();
   const markerLocation = useSelector((state) => state.markerLocation);
 
-  const [txtSearch, setTxtSearch] = useState('');
-  const [data, setData] = useState(['Không có kết quả']);
   const [isfocus, setIsfocus] = useState(false);
 
   const typingTimeoutRef = useRef(null);
@@ -36,69 +34,35 @@ const SearchBar = () => {
     };
   }, []);
 
-  const fetchData = async (newValue) => {
-    try {
-      console.log('newValue', newValue);
-      const response = await PlaceApi.search(newValue);
-      const result = response?.map((res) => {
-        return {
-          display_name: res.display_name,
-          lat: res.lat,
-          lon: res.lon,
-        };
-      });
+  // useEffect(() => {
+  //   if (txtSearch.length > 0 && data.length > 0 && isfocus) {
+  //     processValue.value = withTiming(1);
+  //   } else {
+  //     processValue.value = withTiming(0);
+  //   }
+  // }, [txtSearch, data, isfocus]);
 
-      setData(result);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (txtSearch.length > 0 && data.length > 0 && isfocus) {
-      processValue.value = withTiming(1);
-    } else {
-      processValue.value = withTiming(0);
-    }
-  }, [txtSearch, data, isfocus]);
-
-  const handleTextChange = useCallback((newValue) => {
-    setTxtSearch(newValue);
-
-    if (newValue.length > 0) {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-
-      typingTimeoutRef.current = setTimeout(() => {
-        fetchData(newValue);
-      }, 500);
-    }
-  }, []);
-
-  const handleClickItemResltSearch = (item) => {
-    setTxtSearch(item.display_name);
-    setIsfocus(false);
-    const coordinate = {
-      latitude: Number(item.lat),
-      longitude: Number(item.lon),
-    };
-    console.log('cc', markerLocation);
-    dispatch(setMarkerLocation([...markerLocation, ...[{ coordinate }]]));
-  };
+  // const handleClickItemResltSearch = (item) => {
+  //   setTxtSearch(item.display_name);
+  //   setIsfocus(false);
+  //   const coordinate = {
+  //     latitude: Number(item.lat),
+  //     longitude: Number(item.lon),
+  //   };
+  //   console.log('cc', markerLocation);
+  //   dispatch(setMarkerLocation([...markerLocation, ...[{ coordinate }]]));
+  // };
 
   return (
     <View style={styles.container}>
       <TopInput
-        onFocus={() => setIsfocus(true)}
-        // onBlur={() => setIsfocus(false)}
         value={txtSearch}
         onTextChange={handleTextChange}
         leftIconName={'SearchSVG'}
         placeholder={'Tìm kiếm địa điểm'}
       />
 
-      <Animated.View style={[styles.containerResult, heightStyle]}>
+      {/* <Animated.View style={[styles.containerResult, heightStyle]}>
         <FlatList
           scrollEventThrottle={16}
           data={data}
@@ -115,19 +79,19 @@ const SearchBar = () => {
           showsVerticalScrollIndicator={false}
           scrollToOverflowEnabled={true}
         />
-      </Animated.View>
+      </Animated.View> */}
     </View>
   );
 };
 
-export default SearchBar;
+export default React.memo(SearchBar);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: Spacings.s2,
-    borderRadius: BorderRadiuses.br8,
-    backgroundColor: Colors.gray50,
+    // borderRadius: BorderRadiuses.br8,
+    // backgroundColor: Colors.gray50,
     overflow: 'hidden',
   },
   containerResult: {
