@@ -6,7 +6,7 @@ const ListView = ({ data, renderItem, style = {}, ListHeaderComponent }) => {
     <FlatList
       scrollEventThrottle={16}
       // onScroll={scrollHandle}
-      //   contentContainerStyle={[styles.flatListOption, style]}
+      contentContainerStyle={style}
       data={data}
       ListHeaderComponent={ListHeaderComponent}
       renderItem={renderItem}

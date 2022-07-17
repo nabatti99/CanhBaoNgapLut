@@ -11,7 +11,7 @@ import IconSvg from '../../../../components/IconSVG';
  * @param {String} placeholder
  * @returns
  */
-function TopInput({ value, onTextChange, leftIconName, label, placeholder, onFocus, onBlur }) {
+function TopInput({ value, onTextChange, leftIconName, label, placeholder, onFocus, onBlur, autoFocus = false }) {
   const handleTextChanged = (newValue) => {
     onTextChange(newValue);
   };
@@ -41,6 +41,7 @@ function TopInput({ value, onTextChange, leftIconName, label, placeholder, onFoc
         selectionColor={Colors.blue100}
         value={value}
         onChangeText={handleTextChanged}
+        autoFocus={autoFocus}
       />
     </View>
   );

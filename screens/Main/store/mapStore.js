@@ -43,6 +43,7 @@ const mapSlice = createSlice({
     markerLocation: [
       // {
       //   currentPosition: true,
+      //   name: ''
       //   coordinate: {}
       // }
     ],
@@ -63,6 +64,7 @@ const mapSlice = createSlice({
     },
 
     showSearchSheet: false,
+    showTopArea: false,
   },
   reducers: {
     setPolylines: (state, action) => {
@@ -76,6 +78,7 @@ const mapSlice = createSlice({
     },
 
     setMarkerLocation: (state, action) => {
+      console.log(action);
       state.markerLocation = [...action.payload];
     },
     setDirectionInfors: (state, action) => {
@@ -97,6 +100,9 @@ const mapSlice = createSlice({
     setShowSearchSheet: (state, action) => {
       state.showSearchSheet = action.payload;
     },
+    setShowTopArea: (state, action) => {
+      state.showTopArea = action.payload;
+    },
   },
 });
 
@@ -115,4 +121,5 @@ export const {
   setShownNote,
   handleTopInputChanged,
   setShowSearchSheet,
+  setShowTopArea,
 } = mapSlice.actions;

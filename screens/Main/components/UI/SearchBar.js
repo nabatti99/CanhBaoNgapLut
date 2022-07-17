@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMarkerLocation } from '../../store/mapStore';
 // const data = [1, 2, 312321, 32, 12, 3, 123, 12, 3, 12, 3];
 
-const SearchBar = ({ txtSearch, handleTextChange }) => {
+const SearchBar = ({ txtSearch, handleTextChange, autoFocus = false }) => {
   const dispatch = useDispatch();
   const markerLocation = useSelector((state) => state.markerLocation);
 
@@ -60,6 +60,7 @@ const SearchBar = ({ txtSearch, handleTextChange }) => {
         onTextChange={handleTextChange}
         leftIconName={'SearchSVG'}
         placeholder={'Tìm kiếm địa điểm'}
+        autoFocus={autoFocus}
       />
 
       {/* <Animated.View style={[styles.containerResult, heightStyle]}>
@@ -84,7 +85,7 @@ const SearchBar = ({ txtSearch, handleTextChange }) => {
   );
 };
 
-export default React.memo(SearchBar);
+export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {

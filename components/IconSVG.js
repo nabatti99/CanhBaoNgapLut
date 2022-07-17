@@ -41,6 +41,10 @@ const iconSvgLoaders = {
   MutipleStopSVG: lazyLoad(() => import('../assets/icons/multiple_stop.svg')),
   ScheduleSVG: lazyLoad(() => import('../assets/icons/schedule.svg')),
   CarSVG: lazyLoad(() => import('../assets/icons/car.svg')),
+  ClearSVG: lazyLoad(() => import('../assets/icons/clear.svg')),
+  NearMeSVG: lazyLoad(() => import('../assets/icons/near_me.svg')),
+  ControlPointSVG: lazyLoad(() => import('../assets/icons/control_point.svg')),
+  DragIndicatorSVG: lazyLoad(() => import('../assets/icons/drag_indicator.svg')),
 };
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, ...props }) {

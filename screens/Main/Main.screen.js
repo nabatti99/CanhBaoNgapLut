@@ -7,6 +7,7 @@ import MapMain from './components/Map.main';
 import BottomArea from './BottomArea/BottomArea.main';
 import TopPart from './topParts/TopPart';
 import SearchSheet from './SearchSheet/SearchSheet';
+import TopArea from './TopArea/TopArea';
 
 function MainScreen() {
   return (
@@ -23,6 +24,7 @@ function MainScreen() {
         </View>
 
         <SearchSheet />
+        <TopArea />
       </View>
     </Provider>
   );

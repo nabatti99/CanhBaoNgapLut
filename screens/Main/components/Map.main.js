@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import MarkerDanger from './MarkerDanger';
 
 import floodData from '../../../assets/files/csvjson';
-import { setPolylines, setMarkerLocation } from '../store/mapStore';
+import { setPolylines, setMarkerLocation, setShowTopArea } from '../store/mapStore';
 
 import { useDispatch } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
@@ -17,7 +17,7 @@ const windowHeight = Dimensions.get('screen').height;
 
 function MapMain() {
   const dispatch = useDispatch();
-
+  const [markerMap, setMarkerMap] = useState([]);
   const refMap = useRef(null);
 
   const customMapStyle = [
@@ -84,7 +84,14 @@ function MapMain() {
   useEffect(() => {
     const a = polylines.length;
     if (a > 0) {
-      refMap.current.fitToCoordinates(polylines[a - 1].points, {
+      let points = [];
+      polylines[a - 1].forEach((p) => {
+        points = [...points, ...p.points];
+      });
+      if (points.length > 0) {
+        dispatch(setShowTopArea(true));
+      }
+      refMap.current.fitToCoordinates(points, {
         edgePadding: {
           top: 120,
           right: 40,
@@ -111,12 +118,23 @@ function MapMain() {
       Geolocation.getCurrentPosition(
         (info) => {
           const current = {
+            name: 'Vị trí hiện tại',
             currentPosition: true,
             coordinate: {
               latitude: info.coords.latitude,
               longitude: info.coords.longitude,
             },
           };
+          refMap.current.setCamera(
+            {
+              center: {
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude,
+              },
+              zoom: 16,
+            },
+            1000
+          );
           dispatch(setMarkerLocation([current]));
           AsyncStorage.setItem(
             STORAGE_KEY.CURRENT_POSITION,
@@ -135,7 +153,16 @@ function MapMain() {
 
   useEffect(() => {
     fecthCurrentPosition();
-  }, []);
+  }, [fecthCurrentPosition]);
+
+  useEffect(() => {
+    console.log(markerLocation.length);
+    if (markerLocation.length > 0) {
+      setMarkerMap(markerLocation);
+    } else {
+      setMarkerMap([]);
+    }
+  }, [markerLocation]);
 
   return (
     <View absF marginB-180 bg-blue300>
@@ -144,15 +171,9 @@ function MapMain() {
         style={{
           height: windowHeight,
         }}
-        initialRegion={{
-          latitude: 15.5,
-          longitude: 108.1,
-          latitudeDelta: 1,
-          longitudeDelta: 1,
-        }}
         showsUserLocation={true}
         showsCompass={true}
-        customMapStyle={customMapStyle}
+        // customMapStyle={customMapStyle}
         showsMyLocationButton={false}
         onLongPress={(e) => handleClickMapView(e)}
       >
@@ -209,7 +230,7 @@ function MapMain() {
           });
         })}
 
-        {markerDanger.points?.map((point, index) => (
+        {/* {markerDanger.points?.map((point, index) => (
           <Marker
             coordinate={point}
             key={index}
@@ -228,22 +249,30 @@ function MapMain() {
               </View>
             </Callout>
           </Marker>
-        ))}
+        ))} */}
         {markerLocation.map((marker, index) => {
-          if (marker.currentPosition) return;
-          else
-            return (
-              <Marker
-                draggable={true}
-                coordinate={marker.coordinate}
-                key={index}
-                onDragEnd={(e) => handleDragEndMarker(e, index)}
-              />
-            );
+          // if (marker.currentPosition) return;
+          // else {
+          //   return (
+          //     <Marker
+          //       draggable={true}
+          //       coordinate={marker.coordinate}
+          //       key={`${marker.coordinate.latitude},${marker.coordinate.longitude}`}
+          //       onDragEnd={(e) => handleDragEndMarker(e, index)}
+          //     />
+          //   );
+          return (
+            <Marker
+              draggable={true}
+              coordinate={marker.coordinate}
+              key={index}
+              onDragEnd={(e) => handleDragEndMarker(e, index)}
+            />
+          );
         })}
       </MapView>
     </View>
   );
 }
 
-export default React.memo(MapMain);
+export default MapMain;

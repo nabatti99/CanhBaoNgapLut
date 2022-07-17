@@ -8,6 +8,7 @@ import * as directionApi from '../../../apis/direction.api';
 import polylineMap from '@mapbox/polyline';
 import osrmTextInstructions from 'osrm-text-instructions';
 import { ScrollView } from 'react-native';
+import { useCallback } from 'react';
 
 function Direction() {
   const [isDanger, setIsDanger] = useState(false); // false is not danger
@@ -61,7 +62,7 @@ function Direction() {
     return [data, routeInfor];
   };
 
-  const fetchDirection = async () => {
+  const fetchDirection = useCallback(async () => {
     try {
       const result = await directionApi.direction(markerLocation);
 
@@ -84,14 +85,16 @@ function Direction() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [markerLocation]);
 
   useEffect(() => {
     if (markerLocation.length > 1) {
       fetchDirection();
-      // markerDanger.points.forEach((point) => {});
+      console.log('địt mọe mày');
+    } else {
+      dispatch(setPolylines([]));
     }
-  }, [markerLocation]);
+  }, [markerLocation, fetchDirection]);
 
   // useEffect(() => {
   //   if (polylines[polylines.length - 1].strokeColor === Colors.red600) {
@@ -134,20 +137,21 @@ function Direction() {
               borderRadius: 1,
             }}
           />
-          {polylines[polylines.length - 1].map((polyline) => {
-            return polyline.steps?.map((step, index) => {
-              return (
-                <View key={index} paddingB-s6>
-                  <TouchableOpacity row activeOpacity={0.6}>
-                    <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
-                    <Text gray500 regular marginL-s2>
-                      {osrmTextInstructions('v5').compile('vi', step)}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            });
-          })}
+          {polylines.length > 0 &&
+            polylines[polylines.length - 1].map((polyline) => {
+              return polyline.steps?.map((step, index) => {
+                return (
+                  <View key={index} paddingB-s6>
+                    <TouchableOpacity row activeOpacity={0.6}>
+                      <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+                      <Text gray500 regular marginL-s2>
+                        {osrmTextInstructions('v5').compile('vi', step)}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              });
+            })}
         </View>
         <View row>
           <View

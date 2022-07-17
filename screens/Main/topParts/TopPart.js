@@ -46,7 +46,7 @@ const TopPart = () => {
   );
 };
 
-export default React.memo(TopPart);
+export default TopPart;
 
 const styles = StyleSheet.create({
   searchBarView: {
