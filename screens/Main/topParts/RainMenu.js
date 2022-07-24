@@ -49,6 +49,7 @@ const RainMenu = () => {
         animationType="fade"
         transparent={true}
         visible={modalVisible}
+        statusBarTranslucent={true}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);

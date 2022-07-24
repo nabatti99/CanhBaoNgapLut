@@ -1,7 +1,7 @@
-import { StatusBar } from 'react-native';
 import { Spacings } from 'react-native-ui-lib';
+import { STATUSBAR_HEIGHT } from '../../constants/constant';
 
-const height = StatusBar.currentHeight;
+const height = STATUSBAR_HEIGHT;
 
 export default Spacings.loadSpacings({
   s1: 4,

@@ -6,19 +6,18 @@ import { useSelector } from 'react-redux';
 import MarkerDanger from './MarkerDanger';
 
 import floodData from '../../../assets/files/csvjson';
-import { setPolylines, setMarkerLocation } from '../store/mapStore';
+import { setPolylines, setMarkerLocation, setShowTopArea, setShowTopComponent } from '../store/mapStore';
 
 import { useDispatch } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEY } from '../../../constants/constant';
+import { STORAGE_KEY, TYPE_SHOW_TOP_COMPOENT } from '../../../constants/constant';
 
 const windowHeight = Dimensions.get('screen').height;
 
-function MapMain() {
+const MapMain = React.forwardRef(({}, ref) => {
   const dispatch = useDispatch();
-
-  const refMap = useRef(null);
+  // const refMap = useRef(null);
 
   const customMapStyle = [
     {
@@ -84,7 +83,14 @@ function MapMain() {
   useEffect(() => {
     const a = polylines.length;
     if (a > 0) {
-      refMap.current.fitToCoordinates(polylines[a - 1].points, {
+      let points = [];
+      polylines[a - 1].forEach((p) => {
+        points = [...points, ...p.points];
+      });
+      if (points.length > 0) {
+        dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+      }
+      ref.current.fitToCoordinates(points, {
         edgePadding: {
           top: 120,
           right: 40,
@@ -111,12 +117,23 @@ function MapMain() {
       Geolocation.getCurrentPosition(
         (info) => {
           const current = {
+            name: 'Vị trí hiện tại',
             currentPosition: true,
             coordinate: {
               latitude: info.coords.latitude,
               longitude: info.coords.longitude,
             },
           };
+          ref.current.setCamera(
+            {
+              center: {
+                latitude: info.coords.latitude,
+                longitude: info.coords.longitude,
+              },
+              zoom: 16,
+            },
+            1000
+          );
           dispatch(setMarkerLocation([current]));
           AsyncStorage.setItem(
             STORAGE_KEY.CURRENT_POSITION,
@@ -126,10 +143,10 @@ function MapMain() {
             })
           );
         },
-        (err) => console.log(err)
+        (err) => console.log('error', err)
       );
     } catch (error) {
-      console.log(error);
+      console.log('error', error);
     }
   }, []);
 
@@ -140,19 +157,13 @@ function MapMain() {
   return (
     <View absF marginB-180 bg-blue300>
       <MapView
-        ref={refMap}
+        ref={ref}
         style={{
           height: windowHeight,
         }}
-        initialRegion={{
-          latitude: 15.5,
-          longitude: 108.1,
-          latitudeDelta: 1,
-          longitudeDelta: 1,
-        }}
         showsUserLocation={true}
         showsCompass={true}
-        customMapStyle={customMapStyle}
+        // customMapStyle={customMapStyle}
         showsMyLocationButton={false}
         onLongPress={(e) => handleClickMapView(e)}
       >
@@ -209,7 +220,7 @@ function MapMain() {
           });
         })}
 
-        {markerDanger.points?.map((point, index) => (
+        {/* {markerDanger.points?.map((point, index) => (
           <Marker
             coordinate={point}
             key={index}
@@ -228,22 +239,23 @@ function MapMain() {
               </View>
             </Callout>
           </Marker>
-        ))}
+        ))} */}
         {markerLocation.map((marker, index) => {
           if (marker.currentPosition) return;
-          else
+          else {
             return (
               <Marker
                 draggable={true}
                 coordinate={marker.coordinate}
-                key={index}
+                key={index.toString()}
                 onDragEnd={(e) => handleDragEndMarker(e, index)}
               />
             );
+          }
         })}
       </MapView>
     </View>
   );
-}
+});
 
 export default React.memo(MapMain);

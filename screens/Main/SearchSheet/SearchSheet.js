@@ -3,20 +3,28 @@ import React, { useRef } from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
 import ListView from '../../../components/ListView';
 import ItemSearchPlace from '../components/ItemSearchPlace';
-import { HEIGHT, STORAGE_KEY, WIDTH } from '../../../constants/constant';
+import { HEIGHT, STATUSBAR_HEIGHT, STORAGE_KEY, TYPE_SHOW_TOP_COMPOENT, WIDTH } from '../../../constants/constant';
 import SearchBar from '../components/UI/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import IconSvg from '../../../components/IconSVG';
 import { useEffect } from 'react';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  FadeOutDown,
+  FadeOutUp,
+  interpolate,
+  SlideInUp,
+  SlideOutUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { setShowSearchSheet } from '../store/mapStore';
+import { setMarkerLocation, setShowSearchSheet, setShowTopArea, setShowTopComponent } from '../store/mapStore';
 import * as PlaceApi from '../../../apis/place.api';
 import * as directionApi from '../../../apis/direction.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
 const SearchSheet = () => {
   const dispatch = useDispatch();
@@ -26,6 +34,7 @@ const SearchSheet = () => {
   const typingTimeoutRef = useRef(null);
 
   const showSearchSheet = useSelector((state) => state.showSearchSheet);
+  const markerLocation = useSelector((state) => state.markerLocation);
 
   const contentValue = useSharedValue(HEIGHT);
 
@@ -33,7 +42,7 @@ const SearchSheet = () => {
     return {
       transform: [
         {
-          translateY: withTiming(contentValue.value),
+          translateY: withDelay(200, withTiming(contentValue.value, { duration: 600 })),
         },
       ],
       elevation: interpolate(contentValue.value, [0, HEIGHT], [1, -1]),
@@ -51,38 +60,46 @@ const SearchSheet = () => {
         getInfoDirection.push(
           directionApi.infoDirection([dataCurrentPostion, { longitude: res.lon, latitude: res.lat }])
         );
-        return res.display_name;
+        return {
+          display_name: res.display_name,
+          latitude: Number(res.lat),
+          longitude: Number(res.lon),
+        };
       });
 
       const res = await Promise.all(getInfoDirection);
       const result = res.map((e, index) => {
         return {
-          display_name: resultPlaceName[index],
+          display_name: resultPlaceName[index].display_name,
+          latitude: Number(resultPlaceName[index].latitude),
+          longitude: Number(resultPlaceName[index].longitude),
           duration: e.routes[0].duration,
           distance: e.routes[0].distance,
         };
       });
 
-      console.log(result);
       setData(result);
     } catch (error) {
       console.log(error);
     }
   }, []);
 
-  const handleTextChange = useCallback((newValue) => {
-    setTxtSearch(newValue);
+  const handleTextChange = useCallback(
+    (newValue) => {
+      setTxtSearch(newValue);
 
-    if (newValue.length > 0) {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
+      if (newValue.length > 0) {
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+          fetchData(newValue);
+        }, 500);
       }
-
-      typingTimeoutRef.current = setTimeout(() => {
-        fetchData(newValue);
-      }, 500);
-    }
-  }, []);
+    },
+    [typingTimeoutRef]
+  );
 
   useEffect(() => {
     if (showSearchSheet) {
@@ -91,25 +108,50 @@ const SearchSheet = () => {
   }, [showSearchSheet]);
 
   const handleArrowBack = useCallback(() => {
-    dispatch(setShowSearchSheet(false));
+    dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
     contentValue.value = HEIGHT;
   }, []);
 
+  const handleClickItemSearch = useCallback(
+    (item) => {
+      setTxtSearch(item.display_name);
+      const marker = {
+        name: item.display_name,
+        coordinate: {
+          latitude: Number(item.latitude),
+          longitude: Number(item.longitude),
+        },
+      };
+
+      dispatch(setMarkerLocation([...markerLocation, ...[marker]]));
+      contentValue.value = HEIGHT;
+      dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+      // dispatch(setShowTopArea(true));
+    },
+    [markerLocation]
+  );
   if (showSearchSheet) {
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
         {/* Top */}
-        <View style={styles.topContainer} row centerV>
-          <View marginR-s2>
-            <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
+        <Animated.View entering={SlideInUp.duration(600)} exiting={SlideOutUp.duration(300)}>
+          <View style={styles.topContainer} row centerV>
+            <View marginR-s2>
+              <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
+            </View>
+            <SearchBar handleTextChange={handleTextChange} txtSearch={txtSearch} autoFocus={true} />
           </View>
-          <SearchBar handleTextChange={handleTextChange} txtSearch={txtSearch} />
-        </View>
+          <View></View>
+        </Animated.View>
+
         {/* Content */}
         <Animated.View style={[styles.contentContainer, contentStyle]}>
           {data.length > 0 ? (
-            <ListView data={data} renderItem={({ item }) => <ItemSearchPlace item={item} />} />
+            <ListView
+              data={data}
+              renderItem={({ item }) => <ItemSearchPlace item={item} onPress={() => handleClickItemSearch(item)} />}
+            />
           ) : (
             <Text gray500 marginT-s5>
               Không có kết quả
@@ -123,7 +165,7 @@ const SearchSheet = () => {
   }
 };
 
-export default React.memo(SearchSheet);
+export default SearchSheet;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,5 +1,6 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 import { Colors } from 'react-native-ui-lib';
+import useShowTopCompoent from '../../../utils/showTopComponet';
 
 const mapSlice = createSlice({
   name: 'map',
@@ -43,6 +44,7 @@ const mapSlice = createSlice({
     markerLocation: [
       // {
       //   currentPosition: true,
+      //   name: ''
       //   coordinate: {}
       // }
     ],
@@ -63,6 +65,8 @@ const mapSlice = createSlice({
     },
 
     showSearchSheet: false,
+    showTopArea: false,
+    showTopPart: true,
   },
   reducers: {
     setPolylines: (state, action) => {
@@ -97,6 +101,12 @@ const mapSlice = createSlice({
     setShowSearchSheet: (state, action) => {
       state.showSearchSheet = action.payload;
     },
+    setShowTopArea: (state, action) => {
+      state.showTopArea = action.payload;
+    },
+    setShowTopComponent: (state, action) => {
+      useShowTopCompoent(state, action.payload);
+    },
   },
 });
 
@@ -115,4 +125,6 @@ export const {
   setShownNote,
   handleTopInputChanged,
   setShowSearchSheet,
+  setShowTopArea,
+  setShowTopComponent,
 } = mapSlice.actions;
