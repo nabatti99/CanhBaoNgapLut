@@ -8,4 +8,10 @@ const STORAGE_KEY = {
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
-export { WIDTH, HEIGHT, STORAGE_KEY, STATUSBAR_HEIGHT };
+const TYPE_SHOW_TOP_COMPOENT = {
+  TOP_AREA: 1,
+  SEARCH_SHEET: 2,
+  TOP_PART: 3,
+};
+
+export { WIDTH, HEIGHT, STORAGE_KEY, STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT };

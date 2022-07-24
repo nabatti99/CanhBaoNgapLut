@@ -3,15 +3,17 @@ import React, { useRef } from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
 import ListView from '../../../components/ListView';
 import ItemSearchPlace from '../components/ItemSearchPlace';
-import { HEIGHT, STATUSBAR_HEIGHT, STORAGE_KEY, WIDTH } from '../../../constants/constant';
+import { HEIGHT, STATUSBAR_HEIGHT, STORAGE_KEY, TYPE_SHOW_TOP_COMPOENT, WIDTH } from '../../../constants/constant';
 import SearchBar from '../components/UI/SearchBar';
 import { useDispatch, useSelector } from 'react-redux';
 import IconSvg from '../../../components/IconSVG';
 import { useEffect } from 'react';
 import Animated, {
   FadeOutDown,
+  FadeOutUp,
   interpolate,
   SlideInUp,
+  SlideOutUp,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -19,7 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { setMarkerLocation, setShowSearchSheet, setShowTopArea } from '../store/mapStore';
+import { setMarkerLocation, setShowSearchSheet, setShowTopArea, setShowTopComponent } from '../store/mapStore';
 import * as PlaceApi from '../../../apis/place.api';
 import * as directionApi from '../../../apis/direction.api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -40,7 +42,7 @@ const SearchSheet = () => {
     return {
       transform: [
         {
-          translateY: withDelay(300, withTiming(contentValue.value)),
+          translateY: withDelay(200, withTiming(contentValue.value, { duration: 600 })),
         },
       ],
       elevation: interpolate(contentValue.value, [0, HEIGHT], [1, -1]),
@@ -106,7 +108,7 @@ const SearchSheet = () => {
   }, [showSearchSheet]);
 
   const handleArrowBack = useCallback(() => {
-    dispatch(setShowSearchSheet(false));
+    dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
     contentValue.value = HEIGHT;
   }, []);
 
@@ -120,10 +122,11 @@ const SearchSheet = () => {
           longitude: Number(item.longitude),
         },
       };
-      console.log(marker);
+
       dispatch(setMarkerLocation([...markerLocation, ...[marker]]));
-      handleArrowBack();
-      dispatch(setShowTopArea(true));
+      contentValue.value = HEIGHT;
+      dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+      // dispatch(setShowTopArea(true));
     },
     [markerLocation]
   );
@@ -132,13 +135,14 @@ const SearchSheet = () => {
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
         {/* Top */}
-        <Animated.View entering={SlideInUp.duration(300)} exiting={FadeOutDown.duration(300)}>
+        <Animated.View entering={SlideInUp.duration(600)} exiting={SlideOutUp.duration(300)}>
           <View style={styles.topContainer} row centerV>
             <View marginR-s2>
               <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
             </View>
             <SearchBar handleTextChange={handleTextChange} txtSearch={txtSearch} autoFocus={true} />
           </View>
+          <View></View>
         </Animated.View>
 
         {/* Content */}

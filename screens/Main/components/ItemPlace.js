@@ -1,21 +1,13 @@
-import { Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
 import IconSvg from '../../../components/IconSVG';
 import { WIDTH } from '../../../constants/constant';
-import Animated, {
-  FadeInUp,
-  FadeOutUp,
-  interpolate,
-  Layout,
-  SlideInDown,
-  SlideInUp,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import Animated, { FadeInUp, FadeOutUp, interpolate, Layout, useAnimatedStyle } from 'react-native-reanimated';
 
 const ITEM_SIZE = 40;
 
-const ItemPlace = ({ index, item, translationY, onPress, onPressRemove }) => {
+const ItemPlace = ({ index, item, translationY, onPress, onPressRemove, onPressDrag }) => {
   // console.log(item);
   // if ('name' in item === false) {
   //   item.name = `${Number(item.coordinate.latitude).toFixed(5)}, ${Number(item.coordinate.longitude).toFixed(5)}`;
@@ -58,7 +50,7 @@ const ItemPlace = ({ index, item, translationY, onPress, onPressRemove }) => {
               <IconSvg name={'ClearSVG'} width={24} height={24} onPress={onPressRemove} />
             </View>
             <View>
-              <IconSvg name={'DragIndicatorSVG'} width={28} height={28} />
+              <IconSvg name={'DragIndicatorSVG'} width={28} height={28} onLongPress={onPressDrag} />
             </View>
           </View>
         </View>

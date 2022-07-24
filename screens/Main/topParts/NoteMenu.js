@@ -9,10 +9,14 @@ const NoteMenu = () => {
   const [isShown, setIsShown] = useState(false);
   const widthAnimated = useSharedValue(32);
   const heightAnimated = useSharedValue(32);
-  const animatedView = useAnimatedStyle(() => ({
-    height: heightAnimated.value,
-    width: widthAnimated.value,
-  }));
+
+  const animatedView = useAnimatedStyle(() => {
+    return {
+      height: heightAnimated.value,
+      width: widthAnimated.value,
+    };
+  }, []);
+
   const handleClick = () => {
     widthAnimated.value = withTiming(isShown ? 32 : 138, { duration: 150 });
     heightAnimated.value = withTiming(isShown ? 32 : 92, { duration: 150 });
@@ -21,9 +25,7 @@ const NoteMenu = () => {
   return (
     <Animated.View style={[animatedView, styles.container]} backgroundColor={Colors.white}>
       <View row centerV>
-        <TouchableOpacity activeOpacity={0.8} onPress={handleClick}>
-          <IconSvg name={'DetailsSVG'} width={24} height={24} />
-        </TouchableOpacity>
+        <IconSvg name={'DetailsSVG'} width={24} height={24} onPress={handleClick} />
         <Text strong gray700 marginL-8 numberOfLines={1}>
           Chú thích
         </Text>
@@ -52,7 +54,6 @@ export default NoteMenu;
 
 const styles = StyleSheet.create({
   container: {
-    top: 50,
     overflow: 'hidden',
     padding: 4,
     borderRadius: 4,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View } from 'react-native-ui-lib';
 import { Provider } from 'react-redux';
 
@@ -10,14 +10,13 @@ import SearchSheet from './SearchSheet/SearchSheet';
 import TopArea from './TopArea/TopArea';
 
 function MainScreen() {
+  const refMap = useRef();
   return (
     <Provider store={mapStore}>
       <View flex backgroundColor="black">
-        <MapMain />
+        <MapMain ref={refMap} />
         {/* {style={{ zIndex: 1000, elevation: 100 }}} */}
-        <View paddingH-24 paddingT-20 marginT-stb absT absH>
-          <TopPart />
-        </View>
+        <TopPart refMap={refMap} />
 
         <View flex bottom absB absH>
           <BottomArea />

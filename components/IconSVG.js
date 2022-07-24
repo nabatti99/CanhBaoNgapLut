@@ -47,13 +47,13 @@ const iconSvgLoaders = {
   DragIndicatorSVG: lazyLoad(() => import('../assets/icons/drag_indicator.svg')),
 };
 
-function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, ...props }) {
+function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, onLongPress, ...props }) {
   const iconSvgLoader = iconSvgLoaders[name];
   const Icon = useMemo(() => iconSvgLoader(), [name, color, width, height]);
 
   return (
     <Suspense fallback={<SkeletonView circle height={height} />}>
-      <Pressable onPress={onPress}>
+      <Pressable onPress={onPress} onLongPress={onLongPress}>
         <Icon color={color} width={width} height={height} {...props} />
       </Pressable>
     </Suspense>
