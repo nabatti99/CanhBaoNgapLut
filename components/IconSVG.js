@@ -45,6 +45,8 @@ const iconSvgLoaders = {
   NearMeSVG: lazyLoad(() => import('../assets/icons/near_me.svg')),
   ControlPointSVG: lazyLoad(() => import('../assets/icons/control_point.svg')),
   DragIndicatorSVG: lazyLoad(() => import('../assets/icons/drag_indicator.svg')),
+  HistorySVG: lazyLoad(() => import('../assets/icons/history.svg')),
+  LocationOnSVG: lazyLoad(() => import('../assets/icons/location_on.svg')),
 };
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, onLongPress, ...props }) {

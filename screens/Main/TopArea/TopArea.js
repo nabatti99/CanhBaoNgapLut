@@ -48,7 +48,7 @@ const TopArea = () => {
   );
 
   const handleClickAddMarker = useCallback(() => {
-    handleArrowBack();
+    // handleArrowBack();
     // dispatch(setShowSearchSheet(true));
     dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.SEARCH_SHEET));
   }, []);

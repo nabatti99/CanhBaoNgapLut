@@ -24,11 +24,12 @@ import { useState } from 'react';
 import { setMarkerLocation, setShowSearchSheet, setShowTopArea, setShowTopComponent } from '../store/mapStore';
 import * as PlaceApi from '../../../apis/place.api';
 import * as directionApi from '../../../apis/direction.api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 const SearchSheet = () => {
   const dispatch = useDispatch();
 
+  const [searchHis, setSearchHis] = useState([]);
   const [data, setData] = useState([]);
   const [txtSearch, setTxtSearch] = useState('');
   const typingTimeoutRef = useRef(null);
@@ -101,11 +102,22 @@ const SearchSheet = () => {
     [typingTimeoutRef]
   );
 
+  const fetchDataSearchHis = useCallback(async () => {
+    try {
+      const data = await useAsyncStorage(STORAGE_KEY.SEARCH_HIS).getItem();
+      console.log(JSON.parse(data));
+      if (Array.isArray(JSON.parse(data))) setSearchHis(JSON.parse(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   useEffect(() => {
     if (showSearchSheet) {
       contentValue.value = 0;
+      fetchDataSearchHis();
     }
-  }, [showSearchSheet]);
+  }, [showSearchSheet, fetchDataSearchHis]);
 
   const handleArrowBack = useCallback(() => {
     dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
@@ -113,8 +125,7 @@ const SearchSheet = () => {
   }, []);
 
   const handleClickItemSearch = useCallback(
-    (item) => {
-      setTxtSearch(item.display_name);
+    async (item) => {
       const marker = {
         name: item.display_name,
         coordinate: {
@@ -122,35 +133,93 @@ const SearchSheet = () => {
           longitude: Number(item.longitude),
         },
       };
+      AsyncStorage.getItem(STORAGE_KEY.SEARCH_HIS, (err, result) => {
+        let list = [];
+        if (err) return;
+        if (result) list = JSON.parse(result);
+        if (list.includes((l) => l.name === item.name)) return;
+        list.push(item);
+        console.log(list);
+        AsyncStorage.setItem(STORAGE_KEY.SEARCH_HIS, JSON.stringify(list));
+        // AsyncStorage.removeItem(STORAGE_KEY.SEARCH_HIS);
+      });
+
+      setData([]);
+      setTxtSearch('');
 
       dispatch(setMarkerLocation([...markerLocation, ...[marker]]));
       contentValue.value = HEIGHT;
       dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+
       // dispatch(setShowTopArea(true));
     },
     [markerLocation]
   );
+
+  const handleRemoveSearchHis = useCallback(
+    (index) => {
+      const n = [...searchHis];
+      const newSearchHis = n.filter((_, i) => i !== index);
+      setSearchHis(newSearchHis);
+      AsyncStorage.setItem(STORAGE_KEY.SEARCH_HIS, JSON.stringify(newSearchHis)).catch((err) => console.log(err));
+    },
+    [searchHis]
+  );
+
   if (showSearchSheet) {
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
         {/* Top */}
-        <Animated.View entering={SlideInUp.duration(600)} exiting={SlideOutUp.duration(300)}>
-          <View style={styles.topContainer} row centerV>
+        <Animated.View
+          entering={SlideInUp.duration(600)}
+          exiting={SlideOutUp.duration(300)}
+          style={styles.topContainer}
+        >
+          <View row centerV>
             <View marginR-s2>
               <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
             </View>
             <SearchBar handleTextChange={handleTextChange} txtSearch={txtSearch} autoFocus={true} />
           </View>
-          <View></View>
+          {txtSearch.length === 0 ? (
+            <View row centerV paddingV-s2>
+              <IconSvg
+                name={'CurrentLocationSVG'}
+                width={28}
+                height={28}
+                onPress={handleArrowBack}
+                color={Colors.blue500}
+              />
+              <Text marginL-s2 strong gray500>
+                Vị trí hiện tại
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
         </Animated.View>
 
         {/* Content */}
         <Animated.View style={[styles.contentContainer, contentStyle]}>
-          {data.length > 0 ? (
+          {txtSearch && data.length > 0 ? (
             <ListView
               data={data}
               renderItem={({ item }) => <ItemSearchPlace item={item} onPress={() => handleClickItemSearch(item)} />}
+            />
+          ) : searchHis.length > 0 ? (
+            <ListView
+              data={searchHis}
+              renderItem={({ item, index }) => {
+                return (
+                  <ItemSearchPlace
+                    isHis={true}
+                    item={item}
+                    onPress={() => handleClickItemSearch(item)}
+                    removeSearchHis={() => handleRemoveSearchHis(index)}
+                  />
+                );
+              }}
             />
           ) : (
             <Text gray500 marginT-s5>
@@ -183,6 +252,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     backgroundColor: Colors.white,
     paddingHorizontal: Spacings.s3,
+    width: '100%',
     height: '100%',
     alignItems: 'center',
   },

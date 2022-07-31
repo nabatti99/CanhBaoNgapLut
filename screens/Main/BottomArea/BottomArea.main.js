@@ -22,13 +22,6 @@ function BottomArea() {
 
   return (
     <BottomPanel>
-      {/* <TopInput
-        value={value}
-        onTextChange={(newValue) => dispatch(handleTopInputChanged(newValue))}
-        leftIconName={leftIconName}
-        placeholder={placeholder}
-        label={label}
-      /> */}
       <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
         <Text gray500 strong>
           Kéo biểu tượng
@@ -38,10 +31,7 @@ function BottomArea() {
           để xác định tuyến tường
         </Text>
       </View>
-      {/* <SearchLocation /> */}
-      {/* <StartLocation /> */}
-      {/* <DirectionInstruction /> */}
-      {/* <LocationDetail /> */}
+
       {<Direction />}
     </BottomPanel>
   );

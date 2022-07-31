@@ -1,8 +1,10 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, StatusBar } from 'react-native';
 import { BorderRadiuses, Colors, Shadows, Text, View } from 'react-native-ui-lib';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { HEIGHT, STATUSBAR_HEIGHT } from '../../../constants/constant';
+import { useCallback } from 'react';
 
 const windowHeight = Dimensions.get('screen').height;
 
@@ -15,13 +17,34 @@ function BottomPanel({ children }) {
     height: heightAnimated.value,
   }));
 
+  const changeStatusBar = (s) => {
+    StatusBar.setBackgroundColor(s ? Colors.white : Colors.transparent);
+  };
+
+  const scrollTo = useCallback((destination) => {
+    'worklet';
+
+    if (destination === HEIGHT - STATUSBAR_HEIGHT) runOnJS(changeStatusBar)(true);
+    else runOnJS(changeStatusBar)(false);
+
+    heightAnimated.value = withTiming(destination, { duration: 300 });
+  }, []);
+
   const pan = Gesture.Pan()
     .onUpdate((event) => {
       heightAnimated.value = windowHeight - event.absoluteY;
-      if (heightAnimated.value < BEGIN_HEIGHT) heightAnimated.value = BEGIN_HEIGHT;
+      // if (heightAnimated.value < BEGIN_HEIGHT) heightAnimated.value = BEGIN_HEIGHT;
     })
     .onEnd((event) => {
-      if (event.absoluteY < 100) heightAnimated.value = withTiming(windowHeight - 100, { duration: 240 });
+      if (event.absoluteY < HEIGHT / 2) {
+        scrollTo(HEIGHT - STATUSBAR_HEIGHT);
+      } else if (event.absoluteY < HEIGHT - HEIGHT / 2) {
+        scrollTo(BEGIN_HEIGHT);
+      }
+      //if (event.absoluteY < HEIGHT - BEGIN_HEIGHT + 100)
+      else {
+        scrollTo(BEGIN_HEIGHT);
+      }
     });
 
   return (
@@ -32,8 +55,8 @@ function BottomPanel({ children }) {
           bg-white
           style={{
             ...Shadows.md,
-            borderTopLeftRadius: BorderRadiuses.br32,
-            borderTopRightRadius: BorderRadiuses.br32,
+            borderTopLeftRadius: BorderRadiuses.br16,
+            borderTopRightRadius: BorderRadiuses.br16,
           }}
         >
           <GestureDetector gesture={pan}>
@@ -41,7 +64,6 @@ function BottomPanel({ children }) {
               <View width={52} height={4} bg-gray100 br100 />
             </View>
           </GestureDetector>
-
           {children}
         </View>
       </Animated.View>

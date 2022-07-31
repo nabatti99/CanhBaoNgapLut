@@ -52,7 +52,7 @@ const TopPart = ({ refMap }) => {
   useEffect(() => {
     if (showTopPart) translateY.value = withTiming(0, { duration: 300, easing: Easing.linear });
   }, [showTopPart]);
-
+  console.log('showTopPart', showTopPart);
   if (showTopPart) {
     return (
       <Animated.View style={[styles.container, containerStyle]}>
@@ -80,7 +80,7 @@ const TopPart = ({ refMap }) => {
       </Animated.View>
     );
   } else {
-    return <></>;
+    return <View />;
   }
 };
 

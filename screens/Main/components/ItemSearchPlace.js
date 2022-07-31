@@ -3,19 +3,22 @@ import React from 'react';
 import { Colors, Text, View } from 'react-native-ui-lib';
 import IconSvg from '../../../components/IconSVG';
 
-const ItemSearchPlace = ({ item, onPress }) => {
+const ItemSearchPlace = ({ isHis = false, item, onPress, removeSearchHis }) => {
   const { display_name, duration, distance } = item;
-  const styles = StyleSheet.create({
-    container: {
-      // borderBottomColor: Colors.gray500,
-      // borderBottomWidth: isLast ? 0 : 0.5,
-    },
-  });
+  // const styles = StyleSheet.create({
+  //   container: {
+  //     // borderBottomColor: Colors.gray500,
+  //     // borderBottomWidth: isLast ? 0 : 0.5,
+  //   },
+  // });
 
   return (
     <TouchableOpacity onPress={onPress}>
-      <View paddingH-s3 paddingV-s2 row style={styles.container} centerV>
-        <View column width={'90%'}>
+      <View paddingR-s3 paddingV-s2 row centerV spread width={'100%'}>
+        <View marginR-s2>
+          <IconSvg name={isHis ? 'HistorySVG' : 'LocationOnSVG'} width={30} height={30} color={Colors.gray500} />
+        </View>
+        <View flexG width={'80%'}>
           <Text strong gray500 numberOfLines={2}>
             {display_name}
           </Text>
@@ -40,8 +43,12 @@ const ItemSearchPlace = ({ item, onPress }) => {
             </View>
           </View>
         </View>
-        <View style={{ flexGrow: 1, alignItems: 'flex-end' }}>
-          <IconSvg name={'ArrowRightSVG'} width={22} height={22} />
+        <View flexG style={{ alignItems: 'flex-end' }}>
+          {isHis ? (
+            <IconSvg name={'ClearSVG'} width={22} height={22} color={Colors.gray500} onPress={removeSearchHis} />
+          ) : (
+            <IconSvg name={'ArrowRightSVG'} width={22} height={22} color={Colors.gray500} />
+          )}
         </View>
       </View>
     </TouchableOpacity>

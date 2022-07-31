@@ -4,6 +4,7 @@ const { width: WIDTH, height: HEIGHT } = Dimensions.get('screen');
 
 const STORAGE_KEY = {
   CURRENT_POSITION: 'current_position',
+  SEARCH_HIS: 'search_his',
 };
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
