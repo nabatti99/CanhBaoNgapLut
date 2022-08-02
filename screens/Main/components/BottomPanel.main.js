@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions, StatusBar } from 'react-native';
 import { BorderRadiuses, Colors, Shadows, Text, View } from 'react-native-ui-lib';
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { HEIGHT, STATUSBAR_HEIGHT } from '../../../constants/constant';
 import { useCallback } from 'react';
 
@@ -13,9 +13,22 @@ function BottomPanel({ children }) {
   const BEGIN_HEIGHT = 218;
   const heightAnimated = useSharedValue(BEGIN_HEIGHT);
 
-  const panAnimatedStyle = useAnimatedStyle(() => ({
-    height: heightAnimated.value,
-  }));
+  const panAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      height: heightAnimated.value,
+      borderTopLeftRadius: interpolate(
+        heightAnimated.value,
+        [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT],
+        [BorderRadiuses.br16, 0]
+      ),
+      borderTopRightRadius: interpolate(
+        heightAnimated.value,
+        [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT],
+        [BorderRadiuses.br16, 0]
+      ),
+      overflow: 'hidden',
+    };
+  }, []);
 
   const changeStatusBar = (s) => {
     StatusBar.setBackgroundColor(s ? Colors.white : Colors.transparent);
@@ -55,8 +68,6 @@ function BottomPanel({ children }) {
           bg-white
           style={{
             ...Shadows.md,
-            borderTopLeftRadius: BorderRadiuses.br16,
-            borderTopRightRadius: BorderRadiuses.br16,
           }}
         >
           <GestureDetector gesture={pan}>

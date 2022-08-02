@@ -195,4 +195,4 @@ function Direction() {
   );
 }
 
-export default Direction;
+export default React.memo(Direction);
