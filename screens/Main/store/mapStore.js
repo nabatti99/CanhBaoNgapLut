@@ -1,6 +1,7 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 import { Colors } from 'react-native-ui-lib';
 import useShowTopCompoent from '../../../utils/showTopComponet';
+import { uniqueArray } from '../../../utils/utils';
 
 const mapSlice = createSlice({
   name: 'map',
@@ -48,12 +49,7 @@ const mapSlice = createSlice({
       //   coordinate: {}
       // }
     ],
-    directionInfors: {
-      weight: '',
-      duration: '',
-      distance: '',
-      routes: [],
-    },
+    directionInfors: [],
 
     shownNote: true,
 
@@ -63,6 +59,8 @@ const mapSlice = createSlice({
       leftIconName: 'SendSVG',
       placeholder: '',
     },
+
+    txtSearchPlace: '',
 
     showSearchSheet: false,
     showTopArea: false,
@@ -80,10 +78,11 @@ const mapSlice = createSlice({
     },
 
     setMarkerLocation: (state, action) => {
-      state.markerLocation = [...action.payload];
+      const array = uniqueArray([...action.payload]);
+      state.markerLocation = array;
     },
     setDirectionInfors: (state, action) => {
-      state.directionInfors = { ...action.payload };
+      state.directionInfors = [...action.payload];
     },
 
     setTopInput: (state, action) => {
@@ -107,6 +106,9 @@ const mapSlice = createSlice({
     setShowTopComponent: (state, action) => {
       useShowTopCompoent(state, action.payload);
     },
+    setTxtSearchPlace: (state, action) => {
+      state.txtSearchPlace = action.payload;
+    },
   },
 });
 
@@ -127,4 +129,5 @@ export const {
   setShowSearchSheet,
   setShowTopArea,
   setShowTopComponent,
+  setTxtSearchPlace,
 } = mapSlice.actions;

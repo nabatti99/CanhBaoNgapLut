@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useRef } from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
 import { STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT } from '../../../constants/constant';
@@ -11,16 +11,22 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from 'react-native-reanimated';
-import { setMarkerLocation, setShowSearchSheet, setShowTopArea, setShowTopComponent } from '../store/mapStore';
+import {
+  setMarkerLocation,
+  setShowSearchSheet,
+  setShowTopArea,
+  setShowTopComponent,
+  setTxtSearchPlace,
+} from '../store/mapStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import FooterComponent from './FooterComponent';
 
 const TopArea = () => {
   const dispatch = useDispatch();
   const handleArrowBack = useCallback(() => {
-    // dispatch(setShowTopArea(false));
     dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
   }, []);
 
@@ -35,7 +41,7 @@ const TopArea = () => {
   });
 
   const handleClickItemPlace = useCallback((item) => {
-    console.log('cc');
+    dispatch(setTxtSearchPlace(item.name));
   }, []);
 
   const handleClickRemoveItemPlace = useCallback(
@@ -46,12 +52,6 @@ const TopArea = () => {
     },
     [markerLocation]
   );
-
-  const handleClickAddMarker = useCallback(() => {
-    // handleArrowBack();
-    // dispatch(setShowSearchSheet(true));
-    dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.SEARCH_SHEET));
-  }, []);
 
   const renderItem = ({ item, drag, isActive, index }) => {
     return (
@@ -87,18 +87,7 @@ const TopArea = () => {
             scrollEventThrottle={16}
             contentContainerStyle={styles.listView}
             onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
-            ListFooterComponent={() => {
-              return (
-                <TouchableOpacity onPress={handleClickAddMarker}>
-                  <View row marginL-s9 paddingB-s3 centerV>
-                    <IconSvg name={'ControlPointSVG'} width={28} height={28} color={Colors.blue500} />
-                    <Text marginL-s2 regular gray400>
-                      Thêm điểm đến
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
+            ListFooterComponent={FooterComponent}
           />
         </GestureHandlerRootView>
 

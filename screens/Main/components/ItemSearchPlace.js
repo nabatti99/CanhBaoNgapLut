@@ -5,12 +5,6 @@ import IconSvg from '../../../components/IconSVG';
 
 const ItemSearchPlace = ({ isHis = false, item, onPress, removeSearchHis }) => {
   const { display_name, duration, distance } = item;
-  // const styles = StyleSheet.create({
-  //   container: {
-  //     // borderBottomColor: Colors.gray500,
-  //     // borderBottomWidth: isLast ? 0 : 0.5,
-  //   },
-  // });
 
   return (
     <TouchableOpacity onPress={onPress}>

@@ -1,4 +1,4 @@
-import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useRef } from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
 import ListView from '../../../components/ListView';
@@ -25,6 +25,7 @@ import { setMarkerLocation, setShowSearchSheet, setShowTopArea, setShowTopCompon
 import * as PlaceApi from '../../../apis/place.api';
 import * as directionApi from '../../../apis/direction.api';
 import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { uniqueArray } from '../../../utils/utils';
 
 const SearchSheet = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ const SearchSheet = () => {
 
   const showSearchSheet = useSelector((state) => state.showSearchSheet);
   const markerLocation = useSelector((state) => state.markerLocation);
+  const txtSearchPlace = useSelector((state) => state.txtSearchPlace);
 
   const contentValue = useSharedValue(HEIGHT);
 
@@ -51,15 +53,19 @@ const SearchSheet = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (txtSearchPlace) setTxtSearch(txtSearchPlace);
+  }, [txtSearchPlace]);
+
   const fetchData = useCallback(async (newValue) => {
     try {
       const currentPosition = await AsyncStorage.getItem(STORAGE_KEY.CURRENT_POSITION);
-      const dataCurrentPostion = JSON.parse(currentPosition);
+      const dataCurrentPostion = JSON.parse(currentPosition).coordinate;
       const response = await PlaceApi.search(newValue);
       const getInfoDirection = [];
       const resultPlaceName = response?.map((res) => {
         getInfoDirection.push(
-          directionApi.infoDirection([dataCurrentPostion, { longitude: res.lon, latitude: res.lat }])
+          directionApi.infoDirectionSearch([dataCurrentPostion, { longitude: res.lon, latitude: res.lat }])
         );
         return {
           display_name: res.display_name,
@@ -137,10 +143,9 @@ const SearchSheet = () => {
         let list = [];
         if (err) return;
         if (result) list = JSON.parse(result);
-        if (list.includes((l) => l.name === item.name)) return;
         list.push(item);
-        console.log(list);
-        AsyncStorage.setItem(STORAGE_KEY.SEARCH_HIS, JSON.stringify(list));
+        const uniqueList = uniqueArray(list);
+        AsyncStorage.setItem(STORAGE_KEY.SEARCH_HIS, JSON.stringify(uniqueList));
         // AsyncStorage.removeItem(STORAGE_KEY.SEARCH_HIS);
       });
 
@@ -166,6 +171,15 @@ const SearchSheet = () => {
     [searchHis]
   );
 
+  const handleClickCurrentLocation = useCallback(async () => {
+    const location = await AsyncStorage.getItem(STORAGE_KEY.CURRENT_POSITION);
+    setData([]);
+    setTxtSearch('');
+    dispatch(setMarkerLocation([...markerLocation, ...[JSON.parse(location)]]));
+    contentValue.value = HEIGHT;
+    dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+  }, []);
+
   if (showSearchSheet) {
     return (
       <View style={styles.container}>
@@ -183,18 +197,14 @@ const SearchSheet = () => {
             <SearchBar handleTextChange={handleTextChange} txtSearch={txtSearch} autoFocus={true} />
           </View>
           {txtSearch.length === 0 ? (
-            <View row centerV paddingV-s2>
-              <IconSvg
-                name={'CurrentLocationSVG'}
-                width={28}
-                height={28}
-                onPress={handleArrowBack}
-                color={Colors.blue500}
-              />
-              <Text marginL-s2 strong gray500>
-                Vị trí hiện tại
-              </Text>
-            </View>
+            <TouchableOpacity onPress={handleClickCurrentLocation}>
+              <View row centerV paddingV-s2>
+                <IconSvg name={'CurrentLocationSVG'} width={28} height={28} color={Colors.blue500} />
+                <Text marginL-s2 strong gray500>
+                  Vị trí hiện tại
+                </Text>
+              </View>
+            </TouchableOpacity>
           ) : (
             <></>
           )}

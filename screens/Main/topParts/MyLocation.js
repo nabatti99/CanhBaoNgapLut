@@ -11,7 +11,7 @@ const MyLocation = ({ refMap }) => {
       console.log(curentLocation);
       refMap.current.setCamera(
         {
-          center: JSON.parse(curentLocation),
+          center: JSON.parse(curentLocation).coordinate,
           zoom: 16,
         },
         1000

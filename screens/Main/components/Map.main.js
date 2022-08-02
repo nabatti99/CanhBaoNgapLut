@@ -135,13 +135,7 @@ const MapMain = React.forwardRef(({}, ref) => {
             1000
           );
           dispatch(setMarkerLocation([current]));
-          AsyncStorage.setItem(
-            STORAGE_KEY.CURRENT_POSITION,
-            JSON.stringify({
-              latitude: info.coords.latitude,
-              longitude: info.coords.longitude,
-            })
-          );
+          AsyncStorage.setItem(STORAGE_KEY.CURRENT_POSITION, JSON.stringify(current));
         },
         (err) => console.log('error', err)
       );

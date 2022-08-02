@@ -15,4 +15,10 @@ const TYPE_SHOW_TOP_COMPOENT = {
   TOP_PART: 3,
 };
 
-export { WIDTH, HEIGHT, STORAGE_KEY, STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT };
+const DRIVING = {
+  BIKE: 'routed-bike',
+  CAR: 'routed-car',
+  FOOT: 'routed-foot',
+};
+
+export { WIDTH, HEIGHT, STORAGE_KEY, STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT, DRIVING };

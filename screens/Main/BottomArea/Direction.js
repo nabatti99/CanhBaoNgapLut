@@ -9,6 +9,7 @@ import polylineMap from '@mapbox/polyline';
 import osrmTextInstructions from 'osrm-text-instructions';
 import { ScrollView } from 'react-native';
 import { useCallback } from 'react';
+import { DRIVING } from '../../../constants/constant';
 
 function Direction() {
   const [isDanger, setIsDanger] = useState(false); // false is not danger
@@ -17,7 +18,6 @@ function Direction() {
 
   const markerLocation = useSelector((state) => state.markerLocation);
   const markerDanger = useSelector((state) => state.markerDanger);
-  const directionInfors = useSelector((state) => state.directionInfors);
   const polylines = useSelector((state) => state.polylines);
 
   const legsDirection = (legs) => {
@@ -62,35 +62,55 @@ function Direction() {
     return [data, routeInfor];
   };
 
+  function getDirectionInfo(data) {
+    const index = polylines.length > 0 ? polylines.length - 1 : 0;
+    return {
+      // weight: data.routes[index].weight,
+      duration: `${Number(data.routes[index].duration / 60).toFixed()} p`,
+      distance: `${Number(data.routes[index].distance / 1000).toFixed()} km`,
+    };
+  }
+
   const fetchDirection = useCallback(async () => {
     try {
       const result = await directionApi.direction(markerLocation);
-
       const routes = result.routes.map((route, index) => {
-        const routeInfor = {
-          summary: route.legs[0].summary,
-          weight: route.legs[0].weight,
-          duration: route.legs[0].duration,
-          distance: route.legs[0].distance,
-          steps: [],
-        };
-
         return legsDirection(route.legs);
-
-        // routeInfors.routes.push(routeInfor);
       });
 
-      // dispatch(setDirectionInfors({ ...routeInfors }));
       dispatch(setPolylines([...routes.reverse()]));
     } catch (error) {
       console.log(error);
     }
   }, [markerLocation]);
 
+  const fetchDirectionInfo = useCallback(async () => {
+    try {
+      const getDirectionBike = directionApi.infoDirection(markerLocation, DRIVING.BIKE);
+      const getDirectionCar = directionApi.infoDirection(markerLocation, DRIVING.CAR);
+      const getDirectionFoot = directionApi.infoDirection(markerLocation, DRIVING.FOOT);
+
+      const [directionBike, directionCar, directionFoot] = await Promise.all([
+        getDirectionBike,
+        getDirectionCar,
+        getDirectionFoot,
+      ]);
+
+      const infoDirection = [];
+      infoDirection.push(getDirectionInfo(directionBike));
+      infoDirection.push(getDirectionInfo(directionCar));
+      infoDirection.push(getDirectionInfo(directionFoot));
+
+      dispatch(setDirectionInfors(infoDirection));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [markerLocation, polylines]);
+
   useEffect(() => {
     if (markerLocation.length > 1) {
       fetchDirection();
-      console.log('địt mọe mày');
+      fetchDirectionInfo();
     } else {
       dispatch(setPolylines([]));
     }
