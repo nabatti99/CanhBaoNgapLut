@@ -11,28 +11,48 @@ import LocationDetail from './LocationDetail';
 import Direction from './Direction';
 import IconSvg from '../../../components/IconSVG';
 import { Text, View, Image, Assets, Colors } from 'react-native-ui-lib';
+import { ScrollView } from 'react-native';
+import { WIDTH } from '../../../constants/constant';
+import ItemFloodSituation from '../components/ItemFloodSituation';
 
 function BottomArea() {
-  // const dispatch = useDispatch();
-
-  // const value = useSelector((state) => state.topInput.value);
-  // const leftIconName = useSelector((state) => state.topInput.leftIconName);
-  // const placeholder = useSelector((state) => state.topInput.placeholder);
-  // const label = useSelector((state) => state.topInput.label);
-
+  const floodingSituation = useSelector((state) => state.floodingSituation);
+  console.log(floodingSituation);
   return (
     <BottomPanel>
-      <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
-        <Text gray500 strong>
-          Kéo biểu tượng
-        </Text>
-        <Image source={Assets.marker.locationPoint} />
-        <Text gray500 strong>
-          để xác định tuyến tường
-        </Text>
-      </View>
-
-      {<Direction />}
+      <ScrollView
+        pagingEnabled
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        scrollToOverflowEnabled={true}
+      >
+        <View width={WIDTH} height="100%">
+          <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+            <Text gray500 strong>
+              Kéo biểu tượng
+            </Text>
+            <Image source={Assets.marker.locationPoint} />
+            <Text gray500 strong>
+              để xác định tuyến tường
+            </Text>
+          </View>
+          <Direction />
+        </View>
+        {floodingSituation && floodingSituation.level > 0 ? (
+          <View width={WIDTH} height="100%">
+            <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+              <IconSvg name={'ReportProblemSVG'} width={31} height={31} />
+              <Text gray500 strong>
+                Tình trạng ngập lụt hiện tại
+              </Text>
+            </View>
+            <View>
+              <ItemFloodSituation data={floodingSituation} />
+            </View>
+          </View>
+        ) : null}
+      </ScrollView>
     </BottomPanel>
   );
 }

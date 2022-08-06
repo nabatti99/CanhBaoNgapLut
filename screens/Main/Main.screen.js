@@ -18,12 +18,13 @@ function MainScreen() {
         {/* {style={{ zIndex: 1000, elevation: 100 }}} */}
         <TopPart refMap={refMap} />
 
-        <View flex bottom absB absH></View>
-
         <SearchSheet />
         <TopArea />
+
+        <View flex bottom absB absH>
+          <BottomArea />
+        </View>
       </View>
-      <BottomArea />
     </Provider>
   );
 }

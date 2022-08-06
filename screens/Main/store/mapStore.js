@@ -60,6 +60,12 @@ const mapSlice = createSlice({
       placeholder: '',
     },
 
+    floodingSituation: {
+      // name: '',
+      // description: '',
+      // level: '', 0 | 1 | 2
+    },
+
     txtSearchPlace: '',
 
     showSearchSheet: false,
@@ -109,6 +115,9 @@ const mapSlice = createSlice({
     setTxtSearchPlace: (state, action) => {
       state.txtSearchPlace = action.payload;
     },
+    setFloodingSituation: (state, action) => {
+      state.floodingSituation = action.payload;
+    },
   },
 });
 
@@ -130,4 +139,5 @@ export const {
   setShowTopArea,
   setShowTopComponent,
   setTxtSearchPlace,
+  setFloodingSituation,
 } = mapSlice.actions;

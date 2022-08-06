@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Colors, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setPolylines, setDirectionInfors, setMarkerLocation } from '../store/mapStore';
+import { setPolylines, setDirectionInfors, setMarkerLocation, setFloodingSituation } from '../store/mapStore';
 import IconSvg from '../../../components/IconSVG';
 import * as directionApi from '../../../apis/direction.api';
+import * as placrApi from '../../../apis/place.api';
 import polylineMap from '@mapbox/polyline';
 import osrmTextInstructions from 'osrm-text-instructions';
 import { ScrollView } from 'react-native';
 import { useCallback } from 'react';
 import { DRIVING } from '../../../constants/constant';
+import flood3 from '../../../assets/files/flood3';
+import flood2 from '../../../assets/files/flood2';
 
 function Direction() {
   const [isDanger, setIsDanger] = useState(false); // false is not danger
@@ -19,6 +22,46 @@ function Direction() {
   const markerLocation = useSelector((state) => state.markerLocation);
   const markerDanger = useSelector((state) => state.markerDanger);
   const polylines = useSelector((state) => state.polylines);
+
+  const checkDanger = (flood, data) => {
+    let isDanger = false;
+    for (let i = 0; i < flood.length; i += 10) {
+      const checkFlood = false;
+      const f = flood[i];
+      const pointFlood = {
+        longitude: f.longitude,
+        latitude: f.latitude,
+      };
+
+      for (let j = 0; j < data.points.length; j += 100) {
+        const p = data.points[j];
+        const d = distance(p, pointFlood);
+        if (d < 500) {
+          data.strokeColor = Colors.red600;
+          checkFlood = true;
+          placrApi
+            .searchLocation(pointFlood)
+            .then((res) => {
+              dispatch(
+                setFloodingSituation({
+                  name: res.display_name,
+                  description: 'Nguy hiểm (không thể đi qua)',
+                  level: 2,
+                })
+              );
+            })
+            .catch((err) => console.log('searchLocation err:', err));
+          break;
+        }
+      }
+
+      if (checkFlood) {
+        isDanger = true;
+        break;
+      }
+    }
+    return isDanger;
+  };
 
   const legsDirection = (legs) => {
     return legs.map((leg, index) => {
@@ -33,15 +76,25 @@ function Direction() {
         steps: stepGeometry,
       };
 
-      const check = (point) => {
-        const d = distance(point, markerDanger.points[0]);
-        if (d < 100) {
-          data.strokeColor = Colors.red600;
-          return true;
-        }
-      };
+      // const check = (point) => {
+      //   const d = distance(point, markerDanger.points[0]);
+      //   if (d < 100) {
+      //     data.strokeColor = Colors.red600;
+      //     return true;
+      //   }
+      // };
+      // let check = checkDanger(flood3, data);
+      // if (!check) check = checkDanger(flood2, data);
+      // if (!check) {
+      //   dispatch(setFloodingSituation(null));
+      // }
 
-      data.points.some(check);
+      if (checkDanger(flood3, data)) return data;
+      else if (checkDanger(flood2, data)) return data;
+      else dispatch(setFloodingSituation(null));
+      // data.points.some(check);
+
+      // console.log(data.points);
 
       return data;
     });
