@@ -15,11 +15,11 @@ import { ScrollView } from 'react-native';
 import { WIDTH } from '../../../constants/constant';
 import ItemFloodSituation from '../components/ItemFloodSituation';
 
-function BottomArea() {
+function BottomArea({ isShowCompoent }) {
   const floodingSituation = useSelector((state) => state.floodingSituation);
-  console.log(floodingSituation);
+
   return (
-    <BottomPanel>
+    <BottomPanel isShowCompoent={isShowCompoent}>
       <ScrollView
         pagingEnabled
         horizontal

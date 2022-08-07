@@ -23,6 +23,7 @@ import { useCallback } from 'react';
 import DraggableFlatList, { ScaleDecorator } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FooterComponent from './FooterComponent';
+import { useEffect } from 'react';
 
 const TopArea = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,11 @@ const TopArea = () => {
     },
     [markerLocation]
   );
+
+  useEffect(() => {
+    console.log(markerLocation);
+    if (markerLocation.length === 0) dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
+  }, [markerLocation]);
 
   const renderItem = ({ item, drag, isActive, index }) => {
     return (

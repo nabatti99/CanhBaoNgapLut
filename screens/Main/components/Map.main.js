@@ -12,10 +12,11 @@ import { useDispatch } from 'react-redux';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEY, TYPE_SHOW_TOP_COMPOENT } from '../../../constants/constant';
+import * as placeApi from '../../../apis/place.api';
 
 const windowHeight = Dimensions.get('screen').height;
 
-const MapMain = React.forwardRef(({}, ref) => {
+const MapMain = React.forwardRef(({ clickMap }, ref) => {
   const dispatch = useDispatch();
   // const refMap = useRef(null);
 
@@ -54,31 +55,49 @@ const MapMain = React.forwardRef(({}, ref) => {
   const markerLocation = useSelector((state) => state.markerLocation);
   const shownNote = useSelector((state) => state.shownNote);
 
-  const handleClickMapView = (e) => {
-    const coordinate = e.nativeEvent.coordinate;
-    dispatch(setMarkerLocation([...markerLocation, ...[{ coordinate }]]));
-  };
+  const handleLongClickMapView = useCallback(
+    async (e) => {
+      try {
+        const coordinate = e.nativeEvent.coordinate;
+        const detailPlace = await placeApi.searchLocation(coordinate);
+        const data = {
+          name: detailPlace.display_name,
+          coordinate,
+        };
+        dispatch(setMarkerLocation([...markerLocation, ...[data]]));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [markerLocation]
+  );
 
-  const handleDragEndMarker = (e, index) => {
-    const coordinate = e.nativeEvent.coordinate;
-    const newMarkers = [...markerLocation];
-    newMarkers[index] = {
-      currentPosition: newMarkers[index].currentPosition,
-      coordinate,
-    };
+  const handleDragEndMarker = useCallback(
+    (e, index) => {
+      const coordinate = e.nativeEvent.coordinate;
+      const newMarkers = [...markerLocation];
+      newMarkers[index] = {
+        currentPosition: newMarkers[index].currentPosition,
+        coordinate,
+      };
 
-    dispatch(setMarkerLocation([...newMarkers]));
-  };
+      dispatch(setMarkerLocation([...newMarkers]));
+    },
+    [markerLocation]
+  );
 
-  const handleClickPolyline = (index) => {
-    const newPolylines = [...polylines];
+  const handleClickPolyline = useCallback(
+    (index) => {
+      const newPolylines = [...polylines];
 
-    const p = newPolylines[newPolylines.length - 1];
-    newPolylines[newPolylines.length - 1] = newPolylines[index];
-    newPolylines[index] = p;
+      const p = newPolylines[newPolylines.length - 1];
+      newPolylines[newPolylines.length - 1] = newPolylines[index];
+      newPolylines[index] = p;
 
-    dispatch(setPolylines([...newPolylines]));
-  };
+      dispatch(setPolylines([...newPolylines]));
+    },
+    [polylines]
+  );
 
   useEffect(() => {
     const a = polylines.length;
@@ -159,7 +178,8 @@ const MapMain = React.forwardRef(({}, ref) => {
         showsCompass={true}
         // customMapStyle={customMapStyle}
         showsMyLocationButton={false}
-        onLongPress={(e) => handleClickMapView(e)}
+        onLongPress={(e) => handleLongClickMapView(e)}
+        onPress={clickMap}
       >
         <Heatmap
           points={floodData}
@@ -202,6 +222,7 @@ const MapMain = React.forwardRef(({}, ref) => {
                   : p.strokeColor;
               return (
                 <Polyline
+                  zIndex={100}
                   tappable={true}
                   key={i}
                   coordinates={p.points}

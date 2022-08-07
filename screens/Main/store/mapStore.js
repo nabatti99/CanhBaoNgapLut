@@ -68,9 +68,10 @@ const mapSlice = createSlice({
 
     txtSearchPlace: '',
 
-    showSearchSheet: false,
-    showTopArea: false,
-    showTopPart: true,
+    showTopPart: true, // 0
+    showSearchSheet: false, // 1
+    showTopArea: false, // 2
+    currentShowTopComponent: 0,
   },
   reducers: {
     setPolylines: (state, action) => {

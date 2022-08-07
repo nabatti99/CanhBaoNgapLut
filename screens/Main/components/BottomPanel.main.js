@@ -5,13 +5,14 @@ import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-g
 import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { HEIGHT, STATUSBAR_HEIGHT } from '../../../constants/constant';
 import { useCallback } from 'react';
+import { useEffect } from 'react';
 
 const windowHeight = Dimensions.get('screen').height;
 
-function BottomPanel({ children }) {
+function BottomPanel({ children, isShowCompoent }) {
   // Setup Pan Gesture => height of Bottom Panel
   const BEGIN_HEIGHT = 218;
-  const heightAnimated = useSharedValue(BEGIN_HEIGHT);
+  const heightAnimated = useSharedValue(0);
 
   const panAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -29,6 +30,10 @@ function BottomPanel({ children }) {
       overflow: 'hidden',
     };
   }, []);
+
+  useEffect(() => {
+    heightAnimated.value = withTiming(isShowCompoent ? BEGIN_HEIGHT : 0);
+  }, [isShowCompoent]);
 
   const changeStatusBar = (s) => {
     StatusBar.setBackgroundColor(s ? Colors.white : Colors.transparent);
