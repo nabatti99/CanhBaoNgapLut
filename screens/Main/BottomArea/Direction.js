@@ -233,14 +233,35 @@ function Direction() {
             padding-s2
             br4
             style={{
-              borderColor: isDanger ? Colors.red600 : Colors.green500,
+              borderColor:
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
+                  ? Colors.red600
+                  : Colors.green500,
               borderWidth: 0.5,
             }}
           >
-            <Text regular color={isDanger ? Colors.red600 : Colors.green500}>
-              {isDanger ? 'Đường đi nguy hiểm' : 'Đường đi an toàn'}
+            <Text
+              regular
+              color={
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
+                  ? Colors.red600
+                  : Colors.green500
+              }
+            >
+              {polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
+                ? 'Đường đi nguy hiểm'
+                : 'Đường đi an toàn'}
             </Text>
-            <IconSvg name="DoneSVG" color={Colors.gray500} width={24} height={24} />
+            <IconSvg
+              name={
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
+                  ? 'ReportProblemSVG'
+                  : 'DoneSVG'
+              }
+              color={Colors.gray500}
+              width={24}
+              height={24}
+            />
           </View>
         </View>
       </View>

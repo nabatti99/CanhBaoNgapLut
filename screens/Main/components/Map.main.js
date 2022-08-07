@@ -111,9 +111,9 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
       }
       ref.current.fitToCoordinates(points, {
         edgePadding: {
-          top: 120,
+          top: 240,
           right: 40,
-          bottom: 240,
+          bottom: 220,
           left: 40,
         },
       });
@@ -159,6 +159,7 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
         (err) => console.log('error', err)
       );
     } catch (error) {
+      alert('Vui lòng cho phép ứng dụng truy cập vị trí');
       console.log('error', error);
     }
   }, []);
@@ -209,31 +210,32 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
           opacity={1}
         />
 
-        {polylines.map((polyline, index) => {
-          return polyline.map((p, i) => {
-            if (p.points.length > 0) {
-              const strokeColor =
-                index === polylines.length - 1
-                  ? p.strokeColor != Colors.red600
-                    ? Colors.blue300
-                    : Colors.red600
-                  : p.strokeColor === Colors.red600
-                  ? Colors.red300
-                  : p.strokeColor;
-              return (
-                <Polyline
-                  zIndex={100}
-                  tappable={true}
-                  key={i}
-                  coordinates={p.points}
-                  strokeColor={strokeColor}
-                  strokeWidth={p.strokeWidth}
-                  onPress={() => handleClickPolyline(index)}
-                />
-              );
-            }
-          });
-        })}
+        {markerLocation.length > 1 &&
+          polylines.map((polyline, index) => {
+            return polyline.map((p, i) => {
+              if (p.points.length > 0) {
+                const strokeColor =
+                  index === polylines.length - 1
+                    ? p.strokeColor != Colors.red600
+                      ? Colors.blue300
+                      : Colors.red600
+                    : p.strokeColor === Colors.red600
+                    ? Colors.red300
+                    : p.strokeColor;
+                return (
+                  <Polyline
+                    zIndex={100}
+                    tappable={true}
+                    key={i}
+                    coordinates={p.points}
+                    strokeColor={strokeColor}
+                    strokeWidth={p.strokeWidth}
+                    onPress={() => handleClickPolyline(index)}
+                  />
+                );
+              }
+            });
+          })}
 
         {/* {markerDanger.points?.map((point, index) => (
           <Marker
@@ -255,19 +257,20 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
             </Callout>
           </Marker>
         ))} */}
-        {markerLocation.map((marker, index) => {
-          if (marker.currentPosition) return;
-          else {
-            return (
-              <Marker
-                draggable={true}
-                coordinate={marker.coordinate}
-                key={index.toString()}
-                onDragEnd={(e) => handleDragEndMarker(e, index)}
-              />
-            );
-          }
-        })}
+        {markerLocation.length > 0 &&
+          markerLocation.map((marker, index) => {
+            if (marker.currentPosition) return;
+            else {
+              return (
+                <Marker
+                  draggable={true}
+                  coordinate={marker.coordinate}
+                  key={index.toString()}
+                  onDragEnd={(e) => handleDragEndMarker(e, index)}
+                />
+              );
+            }
+          })}
       </MapView>
     </View>
   );

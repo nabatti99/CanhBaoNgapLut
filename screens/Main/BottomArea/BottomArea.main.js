@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { handleTopInputChanged } from '../store/mapStore';
@@ -17,29 +17,42 @@ import ItemFloodSituation from '../components/ItemFloodSituation';
 
 function BottomArea({ isShowCompoent }) {
   const floodingSituation = useSelector((state) => state.floodingSituation);
+  const markerLocation = useSelector((state) => state.markerLocation);
 
   return (
     <BottomPanel isShowCompoent={isShowCompoent}>
-      <ScrollView
-        pagingEnabled
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        scrollToOverflowEnabled={true}
+      <View
+        width={WIDTH}
+        centerV
+        style={{ position: 'absolute', marginTop: 60, opacity: markerLocation.length < 2 ? 1 : 0 }}
       >
-        <View width={WIDTH} height="100%">
-          <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
-            <Text gray500 strong>
-              Kéo biểu tượng
-            </Text>
-            <Image source={Assets.marker.locationPoint} />
-            <Text gray500 strong>
-              để xác định tuyến tường
-            </Text>
+        <Text gray500 strong center>
+          Tìm kiếm hoặc chọn vị trí trên bản đồ
+        </Text>
+        <Text gray500 strong center>
+          Lướt sang trái để xem mức độ nguy hiểm
+        </Text>
+      </View>
+      {markerLocation.length > 1 && (
+        <ScrollView
+          pagingEnabled
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          scrollToOverflowEnabled={true}
+        >
+          <View width={WIDTH} height="100%">
+            <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+              <Text gray500 strong>
+                Kéo biểu tượng
+              </Text>
+              <Image source={Assets.marker.locationPoint} />
+              <Text gray500 strong>
+                để xác định tuyến tường
+              </Text>
+            </View>
+            <Direction />
           </View>
-          <Direction />
-        </View>
-        {floodingSituation && floodingSituation.level > 0 ? (
           <View width={WIDTH} height="100%">
             <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
               <IconSvg name={'ReportProblemSVG'} width={31} height={31} />
@@ -48,13 +61,19 @@ function BottomArea({ isShowCompoent }) {
               </Text>
             </View>
             <View>
-              <ItemFloodSituation data={floodingSituation} />
+              {floodingSituation && floodingSituation.level > 0 ? (
+                <ItemFloodSituation data={floodingSituation} />
+              ) : (
+                <Text gray500 center style={{ fontSize: 40 }}>
+                  An toàn
+                </Text>
+              )}
             </View>
           </View>
-        ) : null}
-      </ScrollView>
+        </ScrollView>
+      )}
     </BottomPanel>
   );
 }
 
-export default BottomArea;
+export default React.memo(BottomArea);
