@@ -68,10 +68,12 @@ const mapSlice = createSlice({
 
     txtSearchPlace: '',
 
-    showTopPart: true, // 0
+    showTopPart: false, // 0
     showSearchSheet: false, // 1
     showTopArea: false, // 2
     currentShowTopComponent: 0,
+
+    bottomSheetFullScreen: false,
   },
   reducers: {
     setPolylines: (state, action) => {
@@ -119,6 +121,9 @@ const mapSlice = createSlice({
     setFloodingSituation: (state, action) => {
       state.floodingSituation = action.payload;
     },
+    setBottomSheetFullScreen: (state, action) => {
+      state.bottomSheetFullScreen = action.payload;
+    },
   },
 });
 
@@ -141,4 +146,5 @@ export const {
   setShowTopComponent,
   setTxtSearchPlace,
   setFloodingSituation,
+  setBottomSheetFullScreen,
 } = mapSlice.actions;

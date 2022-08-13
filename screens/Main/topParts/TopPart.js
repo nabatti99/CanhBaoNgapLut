@@ -41,8 +41,8 @@ const TopPart = ({ refMap }) => {
     // }, 300);
     dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.SEARCH_SHEET));
   };
-
-  const translateY = useSharedValue(-STATUSBAR_HEIGHT - 200);
+  const BEGIN_HEIGHT = -STATUSBAR_HEIGHT - 200;
+  const translateY = useSharedValue(BEGIN_HEIGHT);
   const containerStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: withTiming(translateY.value, { duration: 300, easing: Easing.linear }) }],
@@ -51,39 +51,36 @@ const TopPart = ({ refMap }) => {
 
   useEffect(() => {
     if (showTopPart) translateY.value = withTiming(0, { duration: 300, easing: Easing.linear });
+    else translateY.value = withTiming(BEGIN_HEIGHT, { duration: 300, easing: Easing.linear });
   }, [showTopPart]);
 
-  if (showTopPart) {
-    return (
-      <Animated.View style={[styles.container, containerStyle]}>
-        <StatusBar barStyle={'dark-content'} />
-        <View row spread>
-          <View flex paddingR-s2>
-            <View width={'100%'} height={48}>
-              <SearchBar />
-              <Pressable style={styles.searchBarView} onPress={handleClickSearchBar}>
-                <View width={'100%'} height={'100%'} />
-              </Pressable>
-            </View>
-            <NoteMenu />
+  return (
+    <Animated.View style={[styles.container, containerStyle]}>
+      <StatusBar barStyle={'dark-content'} />
+      <View style={styles.content} row spread>
+        <View flex paddingR-s2>
+          <View width={'100%'} height={48}>
+            <SearchBar />
+            <Pressable style={styles.searchBarView} onPress={handleClickSearchBar}>
+              <View width={'100%'} height={'100%'} />
+            </Pressable>
           </View>
-          <View right>
-            <RainMenu />
-            <View row centerV marginT-8>
-              <View marginR-8>
-                <MyLocation refMap={refMap} />
-              </View>
-              <View>
-                <Report />
-              </View>
+          <NoteMenu />
+        </View>
+        <View right>
+          <RainMenu />
+          <View row centerV marginT-8>
+            <View marginR-8>
+              <MyLocation refMap={refMap} />
+            </View>
+            <View>
+              <Report />
             </View>
           </View>
         </View>
-      </Animated.View>
-    );
-  } else {
-    return <View />;
-  }
+      </View>
+    </Animated.View>
+  );
 };
 
 export default React.memo(TopPart);
@@ -91,6 +88,9 @@ export default React.memo(TopPart);
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: Spacings.s4,
+    // paddingTop: STATUSBAR_HEIGHT + Spacings.s2,
+  },
+  content: {
     paddingTop: STATUSBAR_HEIGHT + Spacings.s2,
   },
   searchBarView: {

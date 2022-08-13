@@ -28,13 +28,14 @@ const FooterComponent = () => {
 
       <View paddingB-s2 spread row paddingH-s2>
         <View row centerV marginR-s2>
-          <IconSvg name={'CarFrontSVG'} width={24} height={24} />
+          <IconSvg name={'DistanceSVG'} width={24} height={24} />
           <Text marginL-s1>{directionInfors[0]?.distance}</Text>
         </View>
         {directionInfors?.map((d, index) => {
+          const image = index === 0 ? 'PedalBikeSVG' : index === 1 ? 'CarFrontSVG' : 'DirectionsRunSVG';
           return (
             <View row key={index} centerV marginR-s2>
-              <IconSvg name={'CarFrontSVG'} width={24} height={24} />
+              <IconSvg name={image} width={24} height={24} />
               <Text marginL-s1>{d.duration}</Text>
             </View>
           );

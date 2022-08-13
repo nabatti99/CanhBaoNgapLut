@@ -47,6 +47,9 @@ const iconSvgLoaders = {
   DragIndicatorSVG: lazyLoad(() => import('../assets/icons/drag_indicator.svg')),
   HistorySVG: lazyLoad(() => import('../assets/icons/history.svg')),
   LocationOnSVG: lazyLoad(() => import('../assets/icons/location_on.svg')),
+  DirectionsRunSVG: lazyLoad(() => import('../assets/icons/directions_run.svg')),
+  PedalBikeSVG: lazyLoad(() => import('../assets/icons/pedal_bike.svg')),
+  DistanceSVG: lazyLoad(() => import('../assets/icons/distance.svg')),
 };
 
 function IconSvg({ name, color = Colors.gray700, width = 16, height = 16, onPress, onLongPress, ...props }) {

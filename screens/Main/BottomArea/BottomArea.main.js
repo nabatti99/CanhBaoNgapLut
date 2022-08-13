@@ -21,11 +21,7 @@ function BottomArea({ isShowCompoent }) {
 
   return (
     <BottomPanel isShowCompoent={isShowCompoent}>
-      <View
-        width={WIDTH}
-        centerV
-        style={{ position: 'absolute', marginTop: 60, opacity: markerLocation.length < 2 ? 1 : 0 }}
-      >
+      <View width={WIDTH} centerV style={{ position: 'absolute', marginTop: 60, opacity: markerLocation.length < 2 ? 1 : 0 }}>
         <Text gray500 strong center>
           Tìm kiếm hoặc chọn vị trí trên bản đồ
         </Text>
@@ -33,45 +29,44 @@ function BottomArea({ isShowCompoent }) {
           Lướt sang trái để xem mức độ nguy hiểm
         </Text>
       </View>
-      {markerLocation.length > 1 && (
-        <ScrollView
-          pagingEnabled
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          scrollToOverflowEnabled={true}
-        >
-          <View width={WIDTH} height="100%">
-            <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
-              <Text gray500 strong>
-                Kéo biểu tượng
-              </Text>
-              <Image source={Assets.marker.locationPoint} />
-              <Text gray500 strong>
-                để xác định tuyến tường
-              </Text>
-            </View>
-            <Direction />
+      <ScrollView
+        style={{ opacity: markerLocation.length < 2 ? 0 : 1 }}
+        pagingEnabled
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        scrollToOverflowEnabled={true}
+      >
+        <View width={WIDTH} height="100%">
+          <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+            <Text gray500 strong>
+              Kéo biểu tượng
+            </Text>
+            <Image source={Assets.marker.locationPoint} />
+            <Text gray500 strong>
+              để xác định tuyến tường
+            </Text>
           </View>
-          <View width={WIDTH} height="100%">
-            <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
-              <IconSvg name={'ReportProblemSVG'} width={31} height={31} />
-              <Text gray500 strong>
-                Tình trạng ngập lụt hiện tại
-              </Text>
-            </View>
-            <View>
-              {floodingSituation && floodingSituation.level > 0 ? (
-                <ItemFloodSituation data={floodingSituation} />
-              ) : (
-                <Text gray500 center style={{ fontSize: 40 }}>
-                  An toàn
-                </Text>
-              )}
-            </View>
+          <Direction />
+        </View>
+        <View width={WIDTH} height="100%">
+          <View row center paddingB-s2 style={{ borderBottomColor: Colors.gray300, borderBottomWidth: 1 }}>
+            <IconSvg name={'ReportProblemSVG'} width={31} height={31} />
+            <Text gray500 strong>
+              Tình trạng ngập lụt hiện tại
+            </Text>
           </View>
-        </ScrollView>
-      )}
+          <View>
+            {floodingSituation && floodingSituation.level > 0 ? (
+              <ItemFloodSituation data={floodingSituation} />
+            ) : (
+              <Text gray500 center style={{ fontSize: 40 }}>
+                An toàn
+              </Text>
+            )}
+          </View>
+        </View>
+      </ScrollView>
     </BottomPanel>
   );
 }

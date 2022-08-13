@@ -1,7 +1,6 @@
 import { TYPE_SHOW_TOP_COMPOENT } from '../constants/constant';
 
 const useShowTopCompoent = (state, type) => {
-  console.log('type', type);
   if (type === TYPE_SHOW_TOP_COMPOENT.TOP_AREA) {
     console.log('TOP_AREA');
     state.showTopPart = false;

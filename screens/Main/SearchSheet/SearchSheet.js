@@ -64,28 +64,28 @@ const SearchSheet = () => {
       const response = await PlaceApi.search(newValue);
       const getInfoDirection = [];
       const resultPlaceName = response?.map((res) => {
-        getInfoDirection.push(
-          directionApi.infoDirectionSearch([dataCurrentPostion, { longitude: res.lon, latitude: res.lat }])
-        );
+        getInfoDirection.push(directionApi.infoDirectionSearch([dataCurrentPostion, { longitude: res.lon, latitude: res.lat }]));
         return {
           display_name: res.display_name,
           latitude: Number(res.lat),
           longitude: Number(res.lon),
+          duration: 3000,
+          distance: 10000,
         };
       });
 
-      const res = await Promise.all(getInfoDirection);
-      const result = res.map((e, index) => {
-        return {
-          display_name: resultPlaceName[index].display_name,
-          latitude: Number(resultPlaceName[index].latitude),
-          longitude: Number(resultPlaceName[index].longitude),
-          duration: e.routes[0].duration,
-          distance: e.routes[0].distance,
-        };
-      });
+      // const res = await Promise.all(getInfoDirection);
+      // const result = res.map((e, index) => {
+      //   return {
+      //     display_name: resultPlaceName[index].display_name,
+      //     latitude: Number(resultPlaceName[index].latitude),
+      //     longitude: Number(resultPlaceName[index].longitude),
+      //     duration: e.routes[0].duration,
+      //     distance: e.routes[0].distance,
+      //   };
+      // });
 
-      setData(result);
+      setData(resultPlaceName);
     } catch (error) {
       console.log(error);
     }
@@ -185,11 +185,7 @@ const SearchSheet = () => {
       <View style={styles.container}>
         <StatusBar barStyle={'dark-content'} />
         {/* Top */}
-        <Animated.View
-          entering={SlideInUp.duration(600)}
-          exiting={SlideOutUp.duration(300)}
-          style={styles.topContainer}
-        >
+        <Animated.View entering={SlideInUp.duration(600)} exiting={SlideOutUp.duration(300)} style={styles.topContainer}>
           <View row centerV>
             <View marginR-s2>
               <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
@@ -213,10 +209,7 @@ const SearchSheet = () => {
         {/* Content */}
         <Animated.View style={[styles.contentContainer, contentStyle]}>
           {txtSearch && data.length > 0 ? (
-            <ListView
-              data={data}
-              renderItem={({ item }) => <ItemSearchPlace item={item} onPress={() => handleClickItemSearch(item)} />}
-            />
+            <ListView data={data} renderItem={({ item }) => <ItemSearchPlace item={item} onPress={() => handleClickItemSearch(item)} />} />
           ) : searchHis.length > 0 ? (
             <ListView
               data={searchHis}

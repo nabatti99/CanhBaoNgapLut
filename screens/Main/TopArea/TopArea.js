@@ -1,18 +1,13 @@
 import { ScrollView, StatusBar, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useRef } from 'react';
 import { BorderRadiuses, Colors, Shadows, Text, View, Spacings } from 'react-native-ui-lib';
-import { STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT } from '../../../constants/constant';
+import { STATUSBAR_HEIGHT, TYPE_SHOW_TOP_COMPOENT, WIDTH } from '../../../constants/constant';
 import IconSvg from '../../../components/IconSVG';
 import ItemPlace from '../components/ItemPlace';
-import Animated, {
-  SlideInDown,
-  SlideInUp,
-  SlideOutUp,
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from 'react-native-reanimated';
+import Animated, { SlideInDown, SlideInUp, SlideOutUp, useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
 import {
   setMarkerLocation,
+  setPolylines,
   setShowSearchSheet,
   setShowTopArea,
   setShowTopComponent,
@@ -55,9 +50,14 @@ const TopArea = () => {
   );
 
   useEffect(() => {
-    console.log(markerLocation);
-    if (markerLocation.length === 0) dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
-  }, [markerLocation]);
+    if (markerLocation.length === 0)
+      setTimeout(() => {
+        dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_PART));
+      }, 0);
+    return () => {
+      dispatch(setPolylines([]));
+    };
+  }, [markerLocation, dispatch]);
 
   const renderItem = ({ item, drag, isActive, index }) => {
     return (
@@ -82,6 +82,7 @@ const TopArea = () => {
         <GestureHandlerRootView>
           <DraggableFlatList
             ref={flatListRef}
+            style={{ maxHeight: 170 }}
             showsHorizontalScrollIndicator={false}
             showsVerticalScrollIndicator={false}
             scrollToOverflowEnabled={true}
@@ -93,13 +94,14 @@ const TopArea = () => {
             scrollEventThrottle={16}
             contentContainerStyle={styles.listView}
             onLayout={() => flatListRef.current.scrollToEnd({ animated: true })}
-            ListFooterComponent={FooterComponent}
+            // ListFooterComponent={}
           />
         </GestureHandlerRootView>
-
+        <FooterComponent />
         <View style={styles.iconArrow}>
           <IconSvg name={'ArrowLeftSVG'} width={28} height={28} onPress={handleArrowBack} />
         </View>
+        <View style={styles.top} />
       </Animated.View>
     );
   } else {
@@ -115,7 +117,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: BorderRadiuses.br16,
     borderBottomRightRadius: BorderRadiuses.br16,
     paddingHorizontal: Spacings.s3,
-    maxHeight: STATUSBAR_HEIGHT + Spacings.s3 + 180,
+    // maxHeight: STATUSBAR_HEIGHT + Spacings.s3 + 180,
+    marginTop: -(STATUSBAR_HEIGHT - Spacings.s2 + 100),
   },
   iconArrow: {
     position: 'absolute',
@@ -124,5 +127,14 @@ const styles = StyleSheet.create({
   },
   listView: {
     paddingTop: STATUSBAR_HEIGHT + Spacings.s3,
+  },
+  top: {
+    backgroundColor: Colors.white,
+    width: WIDTH,
+    height: STATUSBAR_HEIGHT,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

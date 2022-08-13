@@ -4,12 +4,15 @@ import { BorderRadiuses, Colors, Shadows, Text, View } from 'react-native-ui-lib
 import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { HEIGHT, STATUSBAR_HEIGHT } from '../../../constants/constant';
-import { useCallback } from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { setBottomSheetFullScreen } from '../store/mapStore';
+import { useDispatch, useSelector } from 'react-redux';
 
 const windowHeight = Dimensions.get('screen').height;
 
 function BottomPanel({ children, isShowCompoent }) {
+  const dispatch = useDispatch();
+  const bottomSheetFullScreen = useSelector((state) => state.bottomSheetFullScreen);
   // Setup Pan Gesture => height of Bottom Panel
   const BEGIN_HEIGHT = 218;
   const heightAnimated = useSharedValue(0);
@@ -17,16 +20,8 @@ function BottomPanel({ children, isShowCompoent }) {
   const panAnimatedStyle = useAnimatedStyle(() => {
     return {
       height: heightAnimated.value,
-      borderTopLeftRadius: interpolate(
-        heightAnimated.value,
-        [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT],
-        [BorderRadiuses.br16, 0]
-      ),
-      borderTopRightRadius: interpolate(
-        heightAnimated.value,
-        [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT],
-        [BorderRadiuses.br16, 0]
-      ),
+      borderTopLeftRadius: interpolate(heightAnimated.value, [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT], [BorderRadiuses.br16, 0]),
+      borderTopRightRadius: interpolate(heightAnimated.value, [BEGIN_HEIGHT, HEIGHT - STATUSBAR_HEIGHT], [BorderRadiuses.br16, 0]),
       overflow: 'hidden',
     };
   }, []);
@@ -37,6 +32,7 @@ function BottomPanel({ children, isShowCompoent }) {
 
   const changeStatusBar = (s) => {
     StatusBar.setBackgroundColor(s ? Colors.white : Colors.transparent);
+    dispatch(setBottomSheetFullScreen(s));
   };
 
   const scrollTo = useCallback((destination) => {
@@ -64,6 +60,10 @@ function BottomPanel({ children, isShowCompoent }) {
         scrollTo(BEGIN_HEIGHT);
       }
     });
+
+  useEffect(() => {
+    if (!bottomSheetFullScreen) scrollTo(BEGIN_HEIGHT);
+  }, [bottomSheetFullScreen]);
 
   return (
     <GestureHandlerRootView>

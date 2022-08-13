@@ -107,7 +107,9 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
         points = [...points, ...p.points];
       });
       if (points.length > 0) {
-        dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+        setTimeout(() => {
+          dispatch(setShowTopComponent(TYPE_SHOW_TOP_COMPOENT.TOP_AREA));
+        }, 0);
       }
       ref.current.fitToCoordinates(points, {
         edgePadding: {
@@ -118,7 +120,7 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
         },
       });
     }
-  }, [polylines]);
+  }, [polylines, markerLocation]);
 
   const requestPermissions = useCallback(async () => {
     if (Platform.OS === 'ios') {
@@ -201,8 +203,8 @@ const MapMain = React.forwardRef(({ clickMap }, ref) => {
               '#ff0000',
             ],
             startPoints: [
-              0, 0.08333333333333333, 0.16666666666666666, 0.25, 0.3333333333333333, 0.4166666666666667, 0.5,
-              0.5833333333333334, 0.6666666666666666, 0.75, 0.8333333333333334, 0.9166666666666666, 1,
+              0, 0.08333333333333333, 0.16666666666666666, 0.25, 0.3333333333333333, 0.4166666666666667, 0.5, 0.5833333333333334,
+              0.6666666666666666, 0.75, 0.8333333333333334, 0.9166666666666666, 1,
             ],
           }}
           maxIntensity={100}

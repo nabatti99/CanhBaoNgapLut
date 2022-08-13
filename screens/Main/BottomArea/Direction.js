@@ -15,7 +15,7 @@ import flood3 from '../../../assets/files/flood3';
 import flood2 from '../../../assets/files/flood2';
 
 function Direction() {
-  const [isDanger, setIsDanger] = useState(false); // false is not danger
+  const [direct, setDirect] = useState([]); // false is not danger
 
   const dispatch = useDispatch();
 
@@ -143,11 +143,7 @@ function Direction() {
       const getDirectionCar = directionApi.infoDirection(markerLocation, DRIVING.CAR);
       const getDirectionFoot = directionApi.infoDirection(markerLocation, DRIVING.FOOT);
 
-      const [directionBike, directionCar, directionFoot] = await Promise.all([
-        getDirectionBike,
-        getDirectionCar,
-        getDirectionFoot,
-      ]);
+      const [directionBike, directionCar, directionFoot] = await Promise.all([getDirectionBike, getDirectionCar, getDirectionFoot]);
 
       const infoDirection = [];
       infoDirection.push(getDirectionInfo(directionBike));
@@ -169,13 +165,20 @@ function Direction() {
     }
   }, [markerLocation, fetchDirection]);
 
-  // useEffect(() => {
-  //   if (polylines[polylines.length - 1].strokeColor === Colors.red600) {
-  //     setIsDanger(true);
-  //   } else {
-  //     setIsDanger(false);
-  //   }
-  // }, [polylines]);
+  useEffect(() => {
+    setTimeout(() => {
+      if (polylines.length > 0) {
+        const data = polylines[polylines.length - 1].map((polyline) => {
+          return polyline.steps?.map((step, index) => {
+            return osrmTextInstructions('v5').compile('vi', step);
+          });
+        });
+        setDirect(data[0]);
+      } else {
+        setDirect([]);
+      }
+    }, 0);
+  }, [polylines]);
 
   const distance = (point1, point2) => {
     const lat1 = point1.latitude;
@@ -210,21 +213,18 @@ function Direction() {
               borderRadius: 1,
             }}
           />
-          {polylines.length > 0 &&
-            polylines[polylines.length - 1].map((polyline) => {
-              return polyline.steps?.map((step, index) => {
-                return (
-                  <View key={index} paddingB-s6>
-                    <TouchableOpacity row activeOpacity={0.6}>
-                      <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
-                      <Text gray500 regular marginL-s2>
-                        {osrmTextInstructions('v5').compile('vi', step)}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              });
-            })}
+          {direct?.map((d, index) => {
+            return (
+              <View key={index} paddingB-s6>
+                <TouchableOpacity row activeOpacity={0.6}>
+                  <IconSvg name="SendCircleSVG" color={Colors.gray500} width={24} height={24} />
+                  <Text gray500 regular marginL-s2>
+                    {d}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
         </View>
         <View row>
           <View
@@ -234,18 +234,14 @@ function Direction() {
             br4
             style={{
               borderColor:
-                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
-                  ? Colors.red600
-                  : Colors.green500,
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600 ? Colors.red600 : Colors.green500,
               borderWidth: 0.5,
             }}
           >
             <Text
               regular
               color={
-                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
-                  ? Colors.red600
-                  : Colors.green500
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600 ? Colors.red600 : Colors.green500
               }
             >
               {polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
@@ -254,9 +250,7 @@ function Direction() {
             </Text>
             <IconSvg
               name={
-                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600
-                  ? 'ReportProblemSVG'
-                  : 'DoneSVG'
+                polylines.length > 0 && polylines[polylines.length - 1][0].strokeColor === Colors.red600 ? 'ReportProblemSVG' : 'DoneSVG'
               }
               color={Colors.gray500}
               width={24}
